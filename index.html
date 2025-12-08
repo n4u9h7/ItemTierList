@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>ARC Raiders Loot Manager - Auto Save</title>
+    <title>ARC Raiders Loot Manager - Grid Wishlist</title>
     <style>
         :root {
             --bg-color: #0b0c10;
@@ -14,34 +14,42 @@
 
         body { background-color: var(--bg-color); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; }
         
+        /* 위시리스트 상단 고정 영역 - 그리드 레이아웃으로 변경 */
         #wishlist-container {
             position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
             background: rgba(31, 40, 51, 0.98);
             border-bottom: 2px solid var(--primary);
-            padding: 10px 20px; min-height: 85px;
+            padding: 15px 20px;
             backdrop-filter: blur(15px);
-            display: flex; flex-direction: column;
             box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+            max-height: 300px; overflow-y: auto; /* 내용 많을 시 세로 스크롤 */
         }
-        .wishlist-flex { display: flex; gap: 15px; overflow-x: auto; padding: 10px 0; scrollbar-width: thin; }
-        
+
+        .wishlist-grid { 
+            display: grid; 
+            grid-template-columns: repeat(5, 1fr); /* 5줄(열) 고정 */
+            gap: 10px; 
+            margin-top: 10px;
+        }
+
         .wishlist-item { 
             background: var(--bg-color); border: 1px solid var(--primary);
-            padding: 5px 12px; border-radius: 10px; font-size: 0.8rem;
-            white-space: nowrap; display: flex; align-items: center; gap: 8px;
+            padding: 8px; border-radius: 8px; font-size: 0.85rem;
+            display: flex; align-items: center; gap: 10px;
+            overflow: hidden;
         }
-        .wishlist-icon { width: 30px; height: 30px; background: #000; border-radius: 4px; object-fit: contain; border: 1px solid #444; }
-        .wishlist-price { color: var(--primary); font-weight: bold; font-size: 0.75rem; border-left: 1px solid #555; padding-left: 8px; }
 
-        .container { max-width: 1300px; margin: 140px auto 40px; padding: 0 15px; }
+        .wishlist-icon { width: 40px; height: 40px; background: #000; border-radius: 4px; object-fit: contain; flex-shrink: 0; }
+        .wishlist-info { display: flex; flex-direction: column; overflow: hidden; }
+        .wishlist-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: bold; }
+        .wishlist-price { color: var(--primary); font-size: 0.8rem; }
+
+        .container { max-width: 1300px; margin: 280px auto 40px; padding: 0 15px; transition: margin 0.3s; }
         h2 { color: var(--primary); text-align: center; margin-bottom: 30px; }
 
+        /* 하단 메인 그리드 */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
-        .card { 
-            background: var(--card-bg); border: 1px solid var(--accent);
-            border-radius: 12px; padding: 12px; text-align: center;
-            position: relative; transition: 0.2s;
-        }
+        .card { background: var(--card-bg); border: 1px solid var(--accent); border-radius: 12px; padding: 12px; text-align: center; position: relative; transition: 0.2s; }
         .card.checked { border: 2px solid var(--primary); background: #23313d; }
         .check-btn { position: absolute; top: 10px; right: 10px; width: 18px; height: 18px; cursor: pointer; z-index: 2; }
 
@@ -52,19 +60,23 @@
         .price { color: var(--primary); font-size: 1rem; font-weight: bold; }
         .tier { font-size: 0.65rem; padding: 2px 5px; border-radius: 3px; margin-top: 5px; display: inline-block; color: #fff; }
         .S { background: #e74c3c; } .A { background: #f39c12; } .B { background: #3498db; } .C { background: #7f8c8d; }
+
+        /* 반응형 5열 -> 3열 -> 2열 조절 */
+        @media (max-width: 1100px) { .wishlist-grid { grid-template-columns: repeat(3, 1fr); } .container { margin-top: 350px; } }
+        @media (max-width: 700px) { .wishlist-grid { grid-template-columns: repeat(2, 1fr); } .container { margin-top: 450px; } }
     </style>
 </head>
 <body>
 
 <div id="wishlist-container">
     <div style="display: flex; justify-content: space-between; align-items: center;">
-        <span style="font-size: 0.85rem; color: var(--primary); font-weight: bold;">⭐ 선호 파밍 리스트 (총 가치: <span id="total-value">0</span>)</span>
-        <button onclick="clearStorage()" style="background:none; border: 1px solid #555; color: #aaa; cursor: pointer; font-size: 0.7rem; border-radius: 3px; padding: 2px 5px;">초기화</button>
+        <span style="font-size: 1rem; color: var(--primary); font-weight: bold;">⭐ 선호 파밍 리스트 (총 가치: <span id="total-value">0</span>)</span>
+        <button onclick="clearStorage()" style="background:none; border: 1px solid #555; color: #aaa; cursor: pointer; font-size: 0.75rem; border-radius: 3px; padding: 4px 8px;">초기화</button>
     </div>
-    <div class="wishlist-flex" id="wishlist"></div>
+    <div class="wishlist-grid" id="wishlist"></div>
 </div>
 
-<div class="container">
+<div class="container" id="main-container">
     <h2>ARC RAIDERS FULL DATABASE</h2>
     <div class="grid" id="mainGrid"></div>
 </div>
@@ -73,7 +85,7 @@
     const IMAGE_FOLDER = "arc_raiders_images"; 
     const STORAGE_KEY = "arc_raiders_wishlist";
 
-    // 데이터 전체 포함 (78개)
+    // 데이터 리스트 (동일하게 유지)
     const lootItems = [
 { id: 1, name: "Snap Hook", price: 14000, tier: "S" },
         { id: 2, name: "Queen Reactor", price: 13000, tier: "S" },
@@ -157,17 +169,13 @@
 
     let selectedItems = new Set();
 
-    // 1. 페이지 로드 시 로컬 스토리지 데이터 불러오기
     function init() {
         const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) {
-            selectedItems = new Set(JSON.parse(saved));
-        }
+        if (saved) selectedItems = new Set(JSON.parse(saved));
         renderGrid();
         updateWishlist();
     }
 
-    // 2. 위시리스트 업데이트 및 로컬 스토리지 저장
     function updateWishlist() {
         const wishlistEl = document.getElementById('wishlist');
         const totalValueEl = document.getElementById('total-value');
@@ -177,7 +185,7 @@
         const selected = lootItems.filter(item => selectedItems.has(item.id));
 
         if (selected.length === 0) {
-            wishlistEl.innerHTML = '<span style="color: #666; font-size: 0.8rem;">아이템을 선택해 주세요.</span>';
+            wishlistEl.innerHTML = '<span style="color: #666; font-size: 0.9rem; grid-column: span 5;">아이템을 선택해 주세요.</span>';
             totalValueEl.innerText = '0';
         } else {
             selected.forEach(item => {
@@ -186,15 +194,16 @@
                 const div = document.createElement('div');
                 div.className = 'wishlist-item';
                 div.innerHTML = `
-                    <img src="${IMAGE_FOLDER}/${safeName}.webp" class="wishlist-icon" onerror="this.src='https://via.placeholder.com/30?text=?';">
-                    <span>${item.name}</span>
-                    <span class="wishlist-price">${item.price.toLocaleString()}</span>
+                    <img src="${IMAGE_FOLDER}/${safeName}.webp" class="wishlist-icon" onerror="this.src='https://via.placeholder.com/40?text=?';">
+                    <div class="wishlist-info">
+                        <span class="wishlist-name">${item.name}</span>
+                        <span class="wishlist-price">${item.price.toLocaleString()}</span>
+                    </div>
                 `;
                 wishlistEl.appendChild(div);
             });
             totalValueEl.innerText = totalValue.toLocaleString();
         }
-        // 로컬 스토리지 업데이트
         localStorage.setItem(STORAGE_KEY, JSON.stringify([...selectedItems]));
     }
 
@@ -209,7 +218,6 @@
         updateWishlist();
     }
 
-    // 초기화 버튼
     function clearStorage() {
         if(confirm("모든 선택 내역을 초기화하시겠습니까?")) {
             selectedItems.clear();
@@ -219,20 +227,18 @@
         }
     }
 
-    // 전체 그리드 렌더링
     function renderGrid() {
         const mainGrid = document.getElementById('mainGrid');
         lootItems.sort((a,b) => b.price - a.price).forEach(item => {
             const isChecked = selectedItems.has(item.id);
             const card = document.createElement('div');
             card.className = `card ${isChecked ? 'checked' : ''}`;
-            
             const safeName = item.name.replace(/[\\/:*?"<>|]/g, '');
             const imgSrc = `${IMAGE_FOLDER}/${safeName}.webp`;
 
             card.innerHTML = `
                 <input type="checkbox" class="check-btn" ${isChecked ? 'checked' : ''} onchange="toggleItem(${item.id}, this.parentNode)">
-                <div class="img-box"><img src="${imgSrc}" loading="lazy" onerror="this.onerror=null; this.src='https://via.placeholder.com/90x90?text=?';"></div>
+                <div class="img-box"><img src="${imgSrc}" loading="lazy" onerror="this.src='https://via.placeholder.com/90x90?text=?';"></div>
                 <div class="name">${item.name}</div>
                 <div class="price">${item.price.toLocaleString()}</div>
                 <div class="tier ${item.tier}">${item.tier} Tier</div>
@@ -241,7 +247,7 @@
         });
     }
 
-    init(); // 실행
+    init();
 </script>
 </body>
 </html>
