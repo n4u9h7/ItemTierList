@@ -2,92 +2,235 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>ARC Raiders Loot Manager - Grid Wishlist</title>
+    <title>ARC RAIDERS | Ivory Unified Database</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;700&display=swap');
+
         :root {
-            --bg-color: #0b0c10;
-            --card-bg: #1f2833;
-            --primary: #66fcf1;
-            --accent: #45a29e;
-            --text: #c5c6c7;
+            --bg-ivory: #f2ede4; 
+            --sidebar-ivory: #e6e0d4; 
+            --card-white: #ffffff;
+            --text-main: #3a352a;
+            --border-tan: #dcd3c1;
+            --point-blue: #45a29e;
+            --point-pink: #d33f6a;
+            
+            /* S/A 티어 색상 교환 적용됨 */
+            --tier-s: #f1c40f; /* S티어: 노란색 */
+            --tier-a: #d33f6a; /* A티어: 핑크색 */
+            
+            --tier-b: #3498db;
+            --tier-c: #27ae60;
         }
 
-        body { background-color: var(--bg-color); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; }
-        
-        /* 위시리스트 상단 고정 영역 - 그리드 레이아웃으로 변경 */
-        #wishlist-container {
-            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-            background: rgba(31, 40, 51, 0.98);
-            border-bottom: 2px solid var(--primary);
-            padding: 15px 20px;
-            backdrop-filter: blur(15px);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
-            max-height: 300px; overflow-y: auto; /* 내용 많을 시 세로 스크롤 */
-        }
-
-        .wishlist-grid { 
-            display: grid; 
-            grid-template-columns: repeat(5, 1fr); /* 5줄(열) 고정 */
-            gap: 10px; 
-            margin-top: 10px;
-        }
-
-        .wishlist-item { 
-            background: var(--bg-color); border: 1px solid var(--primary);
-            padding: 8px; border-radius: 8px; font-size: 0.85rem;
-            display: flex; align-items: center; gap: 10px;
+        body {
+            background-color: var(--bg-ivory);
+            color: var(--text-main);
+            font-family: 'Rajdhani', sans-serif;
+            margin: 0;
+            display: flex;
+            height: 100vh;
             overflow: hidden;
         }
 
-        .wishlist-icon { width: 40px; height: 40px; background: #000; border-radius: 4px; object-fit: contain; flex-shrink: 0; }
-        .wishlist-info { display: flex; flex-direction: column; overflow: hidden; }
-        .wishlist-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: bold; }
-        .wishlist-price { color: var(--primary); font-size: 0.8rem; }
+        /* --- Sidebar 영역 (생략) --- */
+        #sidebar {
+            width: 340px;
+            background: var(--sidebar-ivory);
+            border-right: 1px solid var(--border-tan);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.05);
+            z-index: 1000;
+        }
 
-        .container { max-width: 1300px; margin: 280px auto 40px; padding: 0 15px; transition: margin 0.3s; }
-        h2 { color: var(--primary); text-align: center; margin-bottom: 30px; }
+        /* 로고가 영역에 꽉 차도록 설정 (생략) */
+        .logo-container {
+            width: 100%;
+            height: 180px;
+            background: #ffffff;
+            border-bottom: 2px solid var(--border-tan);
+            overflow: hidden;
+        }
 
-        /* 하단 메인 그리드 */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
-        .card { background: var(--card-bg); border: 1px solid var(--accent); border-radius: 12px; padding: 12px; text-align: center; position: relative; transition: 0.2s; }
-        .card.checked { border: 2px solid var(--primary); background: #23313d; }
-        .check-btn { position: absolute; top: 10px; right: 10px; width: 18px; height: 18px; cursor: pointer; z-index: 2; }
+        .logo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
-        .img-box { width: 90px; height: 90px; margin: 5px auto; display: flex; align-items: center; justify-content: center; background: #000; border-radius: 8px; }
-        .img-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .sidebar-content {
+            padding: 20px;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
 
-        .name { font-size: 0.8rem; font-weight: bold; margin: 8px 0; height: 35px; display: flex; align-items: center; justify-content: center; line-height: 1.2; overflow: hidden; color: #fff; }
-        .price { color: var(--primary); font-size: 1rem; font-weight: bold; }
-        .tier { font-size: 0.65rem; padding: 2px 5px; border-radius: 3px; margin-top: 5px; display: inline-block; color: #fff; }
-        .S { background: #e74c3c; } .A { background: #f39c12; } .B { background: #3498db; } .C { background: #7f8c8d; }
+        .section-header {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            color: var(--text-main);
+            background: #ffffff;
+            padding: 8px 15px;
+            border-radius: 20px;
+            text-align: center;
+            border: 1px solid var(--border-tan);
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
 
-        /* 반응형 5열 -> 3열 -> 2열 조절 */
-        @media (max-width: 1100px) { .wishlist-grid { grid-template-columns: repeat(3, 1fr); } .container { margin-top: 350px; } }
-        @media (max-width: 700px) { .wishlist-grid { grid-template-columns: repeat(2, 1fr); } .container { margin-top: 450px; } }
+        .net-worth-box {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-tan);
+        }
+
+        .total-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            text-align: right;
+            color: var(--point-blue);
+            font-weight: bold;
+        }
+
+        #wishlist { display: flex; flex-direction: column; gap: 10px; }
+
+        .wishlist-item {
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid var(--border-tan);
+        }
+
+        .wish-icon { width: 45px; height: 45px; border-radius: 4px; object-fit: contain; background: #f9f9f9; }
+
+        .btn-reset {
+            background: var(--point-pink);
+            color: #fff;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            margin-top: 20px;
+            font-family: 'Orbitron', sans-serif;
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        /* --- Main Content 영역 (생략) --- */
+        .main-content { 
+            flex-grow: 1; 
+            overflow-y: auto; 
+            padding: 40px; 
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 30px;
+        }
+
+        /* --- 아이콘 사이즈 확대가 적용된 카드 디자인 --- */
+        .card {
+            background: var(--card-white);
+            border-radius: 15px;
+            padding: 25px 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid var(--border-tan);
+            position: relative;
+        }
+
+        /* 기본 TIER 텍스트 제거 */
+        .card::before {
+            position: absolute;
+            top: 15px; left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.65rem;
+            background: #8a8271;
+            color: #fff;
+            padding: 2px 12px;
+            border-radius: 10px;
+            letter-spacing: 1px;
+            /* 기본 content는 여기서 제거하고 개별 티어에서 설정 */
+        }
+        
+        /* ❗❗❗ TIER 텍스트 앞에 티어 명칭(S, A, B, C) 추가 ❗❗❗ */
+        .card.S::before { content: "S TIER"; background: var(--tier-s); }
+        .card.A::before { content: "A TIER"; background: var(--tier-a); }
+        .card.B::before { content: "B TIER"; background: var(--tier-b); }
+        .card.C::before { content: "C TIER"; background: var(--tier-c); }
+        /* D 티어가 있다면 추가: .card.D::before { content: "D TIER"; background: gray; } */
+        /* ---------------------------------------------------- */
+
+        .card:hover { transform: translateY(-10px); border-color: var(--point-blue); }
+        .card.checked { background: #fdfaf5; border: 2px solid var(--point-blue); }
+
+        /* 아이템 이미지 아이콘 사이즈 확대 부분 (생략) */
+        .img-box { 
+            width: 80px;
+            height: 80px; 
+            margin: 30px auto 15px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            background: #ffffff; 
+            border-radius: 12px;
+            border: 1px solid #f2ede4;
+        }
+        
+        .img-box img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: contain;
+        }
+
+        .name { font-size: 1.1rem; font-weight: bold; margin-bottom: 8px; height: 45px; overflow: hidden; }
+        .price { font-size: 1.4rem; font-weight: bold; opacity: 0.9; }
+
+        .tier-line { height: 6px; border-radius: 3px; margin-top: 20px; }
+        .S .tier-line { background: var(--tier-s); }
+        .A .tier-line { background: var(--tier-a); }
+        .B .tier-line { background: var(--tier-b); }
+        .C .tier-line { background: var(--tier-c); }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: var(--border-tan); border-radius: 3px; }
     </style>
 </head>
 <body>
 
-<div id="wishlist-container">
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-        <span style="font-size: 1rem; color: var(--primary); font-weight: bold;">⭐ 선호 파밍 리스트 (총 가치: <span id="total-value">0</span>)</span>
-        <button onclick="clearStorage()" style="background:none; border: 1px solid #555; color: #aaa; cursor: pointer; font-size: 0.75rem; border-radius: 3px; padding: 4px 8px;">초기화</button>
+<aside id="sidebar">
+    <div class="logo-container">
+        <img src="logo.png" alt="ARC RAIDERS" onerror="this.src='https://via.placeholder.com/340x180';">
     </div>
-    <div class="wishlist-grid" id="wishlist"></div>
-</div>
+    <div class="sidebar-content">
+        <div class="section-header">PHARMING TARGETS</div>
+        <div class="net-worth-box">
+            <div style="font-size: 0.75rem; opacity: 0.7;">TOTAL NET WORTH</div>
+            <div class="total-value" id="total-value">0</div>
+        </div>
+        <div id="wishlist"></div>
+        <button class="btn-reset" onclick="clearStorage()">RESET SYSTEM</button>
+    </div>
+</aside>
 
-<div class="container" id="main-container">
-    <h2>ARC RAIDERS FULL DATABASE</h2>
+<main class="main-content">
     <div class="grid" id="mainGrid"></div>
-</div>
+</main>
 
 <script>
-    const IMAGE_FOLDER = "arc_raiders_images"; 
-    const STORAGE_KEY = "arc_raiders_wishlist";
+    const IMAGE_FOLDER = "arc_raiders_images";
+    const STORAGE_KEY = "arc_Unified_Ivory_Final";
 
-    // 데이터 리스트 (동일하게 유지)
     const lootItems = [
-{ id: 1, name: "Snap Hook", price: 14000, tier: "S" },
+        { id: 1, name: "Snap Hook", price: 14000, tier: "S" },
         { id: 2, name: "Queen Reactor", price: 13000, tier: "S" },
         { id: 3, name: "Matriarch Reactor", price: 13000, tier: "S" },
         { id: 4, name: "Lance's Mixtape (5th Edition)", price: 10000, tier: "S" },
@@ -102,70 +245,383 @@
         { id: 13, name: "Power Rod", price: 5500, tier: "S" },
         { id: 14, name: "Heavy Shield", price: 5500, tier: "S" },
         { id: 15, name: "Explosive Mine Blueprint", price: 5000, tier: "S" },
-        { id: 16, name: "Leaper Pulse Unit", price: 5000, tier: "S" },
-        { id: 17, name: "Venator Blueprint", price: 5000, tier: "S" },
-        { id: 18, name: "Angled Grip III", price: 5000, tier: "S" },
-        { id: 19, name: "Vulcano Blueprint", price: 5000, tier: "S" },
-        { id: 20, name: "Music Box", price: 5000, tier: "S" },
-        { id: 21, name: "Red Coral Jewelry", price: 5000, tier: "S" },
-        { id: 22, name: "Playing Cards", price: 5000, tier: "S" },
-        { id: 23, name: "Bastion Cell", price: 5000, tier: "S" },
-        { id: 24, name: "WolfPack", price: 5000, tier: "S" },
-        { id: 25, name: "Deadline", price: 5000, tier: "S" },
-        { id: 26, name: "Spectrum Analyzer", price: 3500, tier: "A" },
-        { id: 27, name: "Geiger Counter", price: 3500, tier: "A" },
-        { id: 28, name: "Silver Teaspoon Set", price: 3000, tier: "A" },
-        { id: 29, name: "Statuette", price: 3000, tier: "A" },
-        { id: 30, name: "Flow Controller", price: 3000, tier: "A" },
-        { id: 31, name: "Microscope", price: 3000, tier: "A" },
-        { id: 32, name: "Music Album", price: 3000, tier: "A" },
-        { id: 33, name: "Frequency Modulation Box", price: 3000, tier: "A" },
-        { id: 34, name: "Fine Wristwatch", price: 3000, tier: "A" },
-        { id: 35, name: "Vita Spray", price: 2880, tier: "B" },
-        { id: 36, name: "Exodus Modules", price: 2750, tier: "B" },
-        { id: 37, name: "Bison Driver", price: 2500, tier: "B" },
-        { id: 38, name: "Showstopper", price: 2200, tier: "B" },
-        { id: 39, name: "Pottery", price: 2000, tier: "B" },
-        { id: 40, name: "Very Comfortable Pillow", price: 2000, tier: "B" },
-        { id: 41, name: "Turbo Pump", price: 2000, tier: "B" },
-        { id: 42, name: "Laboratory Reagents", price: 2000, tier: "B" },
-        { id: 43, name: "Snitch Scanner", price: 2000, tier: "B" },
-        { id: 44, name: "Cooling Fan", price: 2000, tier: "B" },
-        { id: 45, name: "Medium Shield", price: 2000, tier: "B" },
-        { id: 46, name: "Rocket Thruster", price: 2000, tier: "B" },
-        { id: 47, name: "Motor", price: 2000, tier: "B" },
-        { id: 48, name: "Portable TV", price: 2000, tier: "B" },
-        { id: 49, name: "Rosary", price: 2000, tier: "B" },
-        { id: 50, name: "Advanced Electrical Components", price: 1750, tier: "B" },
-        { id: 51, name: "Mod Components", price: 1750, tier: "B" },
-        { id: 52, name: "Trailblazer Grenade", price: 1600, tier: "B" },
-        { id: 53, name: "Explosive Mine", price: 1500, tier: "B" },
-        { id: 54, name: "Surge Shield Recharger", price: 1200, tier: "B" },
-        { id: 55, name: "ARC Flex Rubber", price: 1000, tier: "C" },
-        { id: 56, name: "Broken Flashlight", price: 1000, tier: "C" },
-        { id: 57, name: "Torn Book", price: 1000, tier: "C" },
-        { id: 58, name: "Explosive Compound", price: 1000, tier: "C" },
-        { id: 59, name: "Remote Control", price: 1000, tier: "C" },
-        { id: 60, name: "Garlic Press", price: 1000, tier: "C" },
-        { id: 61, name: "Zipline", price: 1000, tier: "C" },
-        { id: 62, name: "Antiseptic", price: 1000, tier: "C" },
-        { id: 63, name: "Smoke Grenade", price: 1000, tier: "C" },
-        { id: 64, name: "ARC Motion Core", price: 1000, tier: "C" },
-        { id: 65, name: "ARC Circuitry", price: 1000, tier: "C" },
-        { id: 66, name: "Industrial Battery", price: 1000, tier: "C" },
-        { id: 67, name: "Rubber Duck", price: 1000, tier: "C" },
-        { id: 68, name: "Radio", price: 1000, tier: "C" },
-        { id: 69, name: "Agave", price: 1000, tier: "C" },
-        { id: 70, name: "Coolant", price: 1000, tier: "C" },
-        { id: 71, name: "Empty Wine Bottle", price: 1000, tier: "C" },
-        { id: 72, name: "Mushroom", price: 1000, tier: "C" },
-        { id: 73, name: "Defibrillator", price: 1000, tier: "C" },
-        { id: 74, name: "Jolt Mine", price: 850, tier: "C" },
-        { id: 75, name: "Shrapnel Grenade", price: 800, tier: "C" },
-        { id: 76, name: "Heavy Gun Parts", price: 700, tier: "C" },
-        { id: 77, name: "Light Gun Parts", price: 700, tier: "C" },
-        { id: 78, name: "Mechanical Components", price: 640, tier: "C" }
-    ];
+        { id: 16, name: "Smoke Grenade Blueprint", price: 5000, tier: "S" },
+        { id: 17, name: "Leaper Pulse Unit", price: 5000, tier: "S" },
+        { id: 18, name: "Light Gun Parts Blueprint", price: 5000, tier: "S" },
+        { id: 19, name: "Tactical Mk. 3 (Healing)", price: 5000, tier: "S" },
+        { id: 20, name: "Torrente Blueprint", price: 5000, tier: "S" },
+        { id: 21, name: "Venator Blueprint", price: 5000, tier: "S" },
+        { id: 22, name: "Tactical MK.3 (Defensive) Blueprint", price: 5000, tier: "S" },
+        { id: 23, name: "Angled Grip II Blueprint", price: 5000, tier: "S" },
+        { id: 24, name: "Looting MK. 3 (Survivor)", price: 5000, tier: "S" },
+        { id: 25, name: "Launcher Ammo Blueprint", price: 5000, tier: "S" },
+        { id: 26, name: "Blue Light Stick Blueprint", price: 5000, tier: "S" },
+        { id: 27, name: "Angled Grip III", price: 5000, tier: "S" },
+        { id: 28, name: "Wolfpack Blueprint", price: 5000, tier: "S" },
+        { id: 29, name: "Shotgun Choke III", price: 5000, tier: "S" },
+        { id: 30, name: "Red Light Stick Blueprint", price: 5000, tier: "S" },
+        { id: 31, name: "Lightweight Stock", price: 5000, tier: "S" },
+        { id: 32, name: "Anvil Splitter Blueprint", price: 5000, tier: "S" },
+        { id: 33, name: "Green Light Stick Blueprint", price: 5000, tier: "S" },
+        { id: 34, name: "Barricade Kit Blueprint", price: 5000, tier: "S" },
+        { id: 35, name: "Compensator III Blueprint", price: 5000, tier: "S" },
+        { id: 36, name: "Vulcano Blueprint", price: 5000, tier: "S" },
+        { id: 37, name: "Shotgun Choke II Blueprint", price: 5000, tier: "S" },
+        { id: 38, name: "Music Box", price: 5000, tier: "S" },
+        { id: 39, name: "Looting MK. 3 (Survivor) Blueprint", price: 5000, tier: "S" },
+        { id: 40, name: "Red Coral Jewelry", price: 5000, tier: "S" },
+        { id: 41, name: "Heavy Fuse Grenade Blueprint", price: 5000, tier: "S" },
+        { id: 42, name: "Lure Grenade Blueprint", price: 5000, tier: "S" },
+        { id: 43, name: "Looting MK. 3 (Cautious)", price: 5000, tier: "S" },
+        { id: 44, name: "Aphelion Rifle Blueprint", price: 5000, tier: "S" },
+        { id: 45, name: "Combat Mk. 3 (Flanking) Blueprint", price: 5000, tier: "S" },
+        { id: 46, name: "Combat Mk.3 (Aggressive) Blueprint", price: 5000, tier: "S" },
+        { id: 47, name: "Hullcracker Blueprint", price: 5000, tier: "S" },
+        { id: 48, name: "Blaze Grenade Blueprint", price: 5000, tier: "S" },
+        { id: 49, name: "Shotgun Silencer Blueprint", price: 5000, tier: "S" },
+        { id: 50, name: "Extended Light Mag II Blueprint", price: 5000, tier: "S" },
+        { id: 51, name: "Complex Gun Parts Blueprint", price: 5000, tier: "S" },
+        { id: 52, name: "Extended Medium Mag III Blueprint", price: 5000, tier: "S" },
+        { id: 53, name: "Shotgun Choke III Blueprint", price: 5000, tier: "S" },
+        { id: 54, name: "Bettina Blueprint", price: 5000, tier: "S" },
+        { id: 55, name: "Silencer I Blueprint", price: 5000, tier: "S" },
+        { id: 56, name: "Vertical Grip III Blueprint", price: 5000, tier: "S" },
+        { id: 57, name: "Stable Stock III Blueprint", price: 5000, tier: "S" },
+        { id: 58, name: "Tactical MK.3 (Healing) Blueprint", price: 5000, tier: "S" },
+        { id: 59, name: "not-in-game-Deadline Blueprint", price: 5000, tier: "S" },
+        { id: 60, name: "Combat Mk.3 (Flanking)", price: 5000, tier: "S" },
+        { id: 61, name: "Tempest I Blueprint", price: 5000, tier: "S" },
+        { id: 62, name: "Heavy Gun Parts Blueprint", price: 5000, tier: "S" },
+        { id: 63, name: "Showstopper Blueprint", price: 5000, tier: "S" },
+        { id: 64, name: "Remote Raider Flare Blueprint", price: 5000, tier: "S" },
+        { id: 65, name: "Playing Cards", price: 5000, tier: "S" },
+        { id: 66, name: "Yellow Light Stick Blueprint", price: 5000, tier: "S" },
+        { id: 67, name: "Angled Grip III Blueprint", price: 5000, tier: "S" },
+        { id: 68, name: "Tactical Mk.3 (Defensive)", price: 5000, tier: "S" },
+        { id: 69, name: "Bastion Cell", price: 5000, tier: "S" },
+        { id: 70, name: "WolfPack", price: 5000, tier: "S" },
+        { id: 71, name: "Shotgun Silencer", price: 5000, tier: "S" },
+        { id: 72, name: "Compensator III", price: 5000, tier: "S" },
+        { id: 73, name: "Combat Mk. 3 (Aggressive)", price: 5000, tier: "S" },
+        { id: 74, name: "Anvil Blueprint", price: 5000, tier: "S" },
+        { id: 75, name: "Extended Shotgun Mag II Blueprint", price: 5000, tier: "S" },
+        { id: 76, name: "Horizontal Grip Blueprint", price: 5000, tier: "S" },
+        { id: 77, name: "Osprey Blueprint", price: 5000, tier: "S" },
+        { id: 78, name: "Vita Shot Blueprint", price: 5000, tier: "S" },
+        { id: 79, name: "Defibrillator Blueprint", price: 5000, tier: "S" },
+        { id: 80, name: "Deadline", price: 5000, tier: "S" },
+        { id: 81, name: "Il Toro Blueprint", price: 5000, tier: "S" },
+        { id: 82, name: "Energy Ammo Blueprint", price: 5000, tier: "S" },
+        { id: 83, name: "Vita Spray Blueprint", price: 5000, tier: "S" },
+        { id: 84, name: "Jupiter Blueprint", price: 5000, tier: "S" },
+        { id: 85, name: "Stable Stock II Blueprint", price: 5000, tier: "S" },
+        { id: 86, name: "Compensator II Blueprint", price: 5000, tier: "S" },
+        { id: 87, name: "Equalizer Blueprint", price: 5000, tier: "S" },
+        { id: 88, name: "Trigger Nade Blueprint", price: 5000, tier: "S" },
+        { id: 89, name: "Bombardier Cell", price: 5000, tier: "S" },
+        { id: 90, name: "Extended Barrel", price: 5000, tier: "S" },
+        { id: 91, name: "Door Blocker Blueprint", price: 5000, tier: "S" },
+        { id: 92, name: "Jolt Mine Blueprint", price: 5000, tier: "S" },
+        { id: 93, name: "Extended Shotgun Mag III Blueprint", price: 5000, tier: "S" },
+        { id: 94, name: "Rocketeer Driver", price: 5000, tier: "S" },
+        { id: 95, name: "Padded Stock Blueprint", price: 5000, tier: "S" },
+        { id: 96, name: "Stable Stock III", price: 5000, tier: "S" },
+        { id: 97, name: "Bobcat Blueprint", price: 5000, tier: "S" },
+        { id: 98, name: "Snap Hook Blueprint", price: 5000, tier: "S" },
+        { id: 99, name: "Silencer II Blueprint", price: 5000, tier: "S" },
+        { id: 100, name: "Burletta Blueprint", price: 5000, tier: "S" },
+        { id: 101, name: "Photoelectric Cloak", price: 5000, tier: "S" },
+        { id: 102, name: "Extended Medium Mag II Blueprint", price: 5000, tier: "S" },
+        { id: 103, name: "Silencer II", price: 5000, tier: "S" },
+        { id: 104, name: "Extended Light Mag III Blueprint", price: 5000, tier: "S" },
+        { id: 105, name: "Extended Barrel Blueprint", price: 5000, tier: "S" },
+        { id: 106, name: "Muzzle Brake II Blueprint", price: 5000, tier: "S" },
+        { id: 107, name: "Lightweight Stock Blueprint", price: 5000, tier: "S" },
+        { id: 108, name: "Medium Gun Parts Blueprint", price: 5000, tier: "S" },
+        { id: 109, name: "Muzzle Brake III Blueprint", price: 5000, tier: "S" },
+        { id: 110, name: "Silencer III Blueprint", price: 5000, tier: "S" },
+        { id: 111, name: "Tagging Grenade Blueprint", price: 5000, tier: "S" },
+        { id: 112, name: "Vertical Grip II Blueprint", price: 5000, tier: "S" },
+        { id: 113, name: "Spectrum Analyzer", price: 3500, tier: "A" },
+        { id: 114, name: "Geiger Counter", price: 3500, tier: "A" },
+        { id: 115, name: "Silver Teaspoon Set", price: 3000, tier: "A" },
+        { id: 116, name: "Statuette", price: 3000, tier: "A" },
+        { id: 117, name: "Flow Controller", price: 3000, tier: "A" },
+        { id: 118, name: "Microscope", price: 3000, tier: "A" },
+        { id: 119, name: "Radio Relay", price: 3000, tier: "A" },
+        { id: 120, name: "Sample Cleaner", price: 3000, tier: "A" },
+        { id: 121, name: "Music Album", price: 3000, tier: "A" },
+        { id: 122, name: "Frequency Modulation Box", price: 3000, tier: "A" },
+        { id: 123, name: "Fine Wristwatch", price: 3000, tier: "A" },
+        { id: 124, name: "Spectrometer", price: 3000, tier: "A" },
+        { id: 125, name: "Mini Centrifuge", price: 3000, tier: "A" },
+        { id: 126, name: "Shredder Gyro", price: 3000, tier: "A" },
+        { id: 127, name: "Signal Amplifier", price: 3000, tier: "A" },
+        { id: 128, name: "Rotary Encoder", price: 3000, tier: "A" },
+        { id: 129, name: "Vase", price: 3000, tier: "A" },
+        { id: 130, name: "Telemetry Transceiver", price: 3000, tier: "A" },
+        { id: 131, name: "Complex Gun Parts", price: 3000, tier: "A" },
+        { id: 132, name: "Sentinel Firing Core", price: 3000, tier: "A" },
+        { id: 133, name: "Vita Spray", price: 2880, tier: "B" },
+        { id: 134, name: "Exodus Modules", price: 2750, tier: "B" },
+        { id: 135, name: "Bison Driver", price: 2500, tier: "B" },
+        { id: 136, name: "Showstopper", price: 2200, tier: "B" },
+        { id: 137, name: "Pottery", price: 2000, tier: "B" },
+        { id: 138, name: "Very Comfortable Pillow", price: 2000, tier: "B" },
+        { id: 139, name: "Turbo Pump", price: 2000, tier: "B" },
+        { id: 140, name: "Laboratory Reagents", price: 2000, tier: "B" },
+        { id: 141, name: "Extended Light Mag II", price: 2000, tier: "B" },
+        { id: 142, name: "Poster of Natural Wonder", price: 2000, tier: "B" },
+        { id: 143, name: "Looting Mk. 2", price: 2000, tier: "B" },
+        { id: 144, name: "Tactical Mk. 2", price: 2000, tier: "B" },
+        { id: 145, name: "Film Reel", price: 2000, tier: "B" },
+        { id: 146, name: "Painted Box", price: 2000, tier: "B" },
+        { id: 147, name: "Snitch Scanner", price: 2000, tier: "B" },
+        { id: 148, name: "Damaged Rocketeer Driver", price: 2000, tier: "B" },
+        { id: 149, name: "Cooling Fan", price: 2000, tier: "B" },
+        { id: 150, name: "Stable Stock II", price: 2000, tier: "B" },
+        { id: 151, name: "Air Freshener", price: 2000, tier: "B" },
+        { id: 152, name: "Shotgun Choke II", price: 2000, tier: "B" },
+        { id: 153, name: "Medium Shield", price: 2000, tier: "B" },
+        { id: 154, name: "Combat Mk. 2", price: 2000, tier: "B" },
+        { id: 155, name: "Raider Hatch Key", price: 2000, tier: "B" },
+        { id: 156, name: "Compensator II", price: 2000, tier: "B" },
+        { id: 157, name: "Light Bulb", price: 2000, tier: "B" },
+        { id: 158, name: "Unusable Weapon", price: 2000, tier: "B" },
+        { id: 159, name: "Sterilized Bandage", price: 2000, tier: "B" },
+        { id: 160, name: "Rocket Thruster", price: 2000, tier: "B" },
+        { id: 161, name: "Hornet Driver", price: 2000, tier: "B" },
+        { id: 162, name: "Extended Medium Mag II", price: 2000, tier: "B" },
+        { id: 163, name: "Dart Board", price: 2000, tier: "B" },
+        { id: 164, name: "Motor", price: 2000, tier: "B" },
+        { id: 165, name: "Broken Guidance System", price: 2000, tier: "B" },
+        { id: 166, name: "Muzzle Brake II", price: 2000, tier: "B" },
+        { id: 167, name: "Spring Cushion", price: 2000, tier: "B" },
+        { id: 168, name: "Bicycle Pump", price: 2000, tier: "B" },
+        { id: 169, name: "Ruined Accordion", price: 2000, tier: "B" },
+        { id: 170, name: "Portable TV", price: 2000, tier: "B" },
+        { id: 171, name: "Fried Motherboard", price: 2000, tier: "B" },
+        { id: 172, name: "Extended Shotgun Mag II", price: 2000, tier: "B" },
+        { id: 173, name: "Spotter Relay", price: 2000, tier: "B" },
+        { id: 174, name: "Vita Shot", price: 2000, tier: "B" },
+        { id: 175, name: "Broken Handheld Radio", price: 2000, tier: "B" },
+        { id: 176, name: "Rosary", price: 2000, tier: "B" },
+        { id: 177, name: "Rusted Shut Medical Kit", price: 2000, tier: "B" },
+        { id: 178, name: "Vertical Grip II", price: 2000, tier: "B" },
+        { id: 179, name: "Surveyor Vault", price: 2000, tier: "B" },
+        { id: 180, name: "Rusted Gear", price: 2000, tier: "B" },
+        { id: 181, name: "Advanced Electrical Components", price: 1750, tier: "B" },
+        { id: 182, name: "Mod Components", price: 1750, tier: "B" },
+        { id: 183, name: "Advanced Mechanical Components", price: 1750, tier: "B" },
+        { id: 184, name: "Blaze Grenade", price: 1600, tier: "B" },
+        { id: 185, name: "Heavy Fuze Grenade", price: 1600, tier: "B" },
+        { id: 186, name: "Trailblazer Grenade", price: 1600, tier: "B" },
+        { id: 187, name: "Explosive Mine", price: 1500, tier: "B" },
+        { id: 188, name: "Surge Shield Recharger", price: 1200, tier: "B" },
+        { id: 189, name: "ARC Flex Rubber", price: 1000, tier: "C" },
+        { id: 190, name: "Broken Flashlight", price: 1000, tier: "C" },
+        { id: 191, name: "Torn Book", price: 1000, tier: "C" },
+        { id: 192, name: "Explosive Compound", price: 1000, tier: "C" },
+        { id: 193, name: "Lure Grenade", price: 1000, tier: "C" },
+        { id: 194, name: "Remote Control", price: 1000, tier: "C" },
+        { id: 195, name: "Garlic Press", price: 1000, tier: "C" },
+        { id: 196, name: "Bloated Tuna Can", price: 1000, tier: "C" },
+        { id: 197, name: "Projector", price: 1000, tier: "C" },
+        { id: 198, name: "Blaze Grenade Trap", price: 1000, tier: "C" },
+        { id: 199, name: "Coffee Pot", price: 1000, tier: "C" },
+        { id: 200, name: "Broken Riot Shield", price: 1000, tier: "C" },
+        { id: 201, name: "Zipline", price: 1000, tier: "C" },
+        { id: 202, name: "Water Filter", price: 1000, tier: "C" },
+        { id: 203, name: "Expired Pasta", price: 1000, tier: "C" },
+        { id: 204, name: "Cat Bed", price: 1000, tier: "C" },
+        { id: 205, name: "Alarm Clock", price: 1000, tier: "C" },
+        { id: 206, name: "Antiseptic", price: 1000, tier: "C" },
+        { id: 207, name: "Rusted Tools", price: 1000, tier: "C" },
+        { id: 208, name: "Recorder", price: 1000, tier: "C" },
+        { id: 209, name: "Smoke Grenade", price: 1000, tier: "C" },
+        { id: 210, name: "Deflated Football", price: 1000, tier: "C" },
+        { id: 211, name: "ARC Motion Core", price: 1000, tier: "C" },
+        { id: 212, name: "ARC Circuitry", price: 1000, tier: "C" },
+        { id: 213, name: "Water Pump", price: 1000, tier: "C" },
+        { id: 214, name: "Industrial Battery", price: 1000, tier: "C" },
+        { id: 215, name: "Ripped Safety Vest", price: 1000, tier: "C" },
+        { id: 216, name: "Rubber Duck", price: 1000, tier: "C" },
+        { id: 217, name: "Tagging Grenade", price: 1000, tier: "C" },
+        { id: 218, name: "Cooling Coil", price: 1000, tier: "C" },
+        { id: 219, name: "Broken Taser", price: 1000, tier: "C" },
+        { id: 220, name: "Thermostat", price: 1000, tier: "C" },
+        { id: 221, name: "Fertilizer", price: 1000, tier: "C" },
+        { id: 222, name: "Radio", price: 1000, tier: "C" },
+        { id: 223, name: "Toaster", price: 1000, tier: "C" },
+        { id: 224, name: "Rubber Pad", price: 1000, tier: "C" },
+        { id: 225, name: "Ruined Riot Shield", price: 1000, tier: "C" },
+        { id: 226, name: "Agave", price: 1000, tier: "C" },
+        { id: 227, name: "Wasp Driver", price: 1000, tier: "C" },
+        { id: 228, name: "Power Cable", price: 1000, tier: "C" },
+        { id: 229, name: "Damaged Heat Sink", price: 1000, tier: "C" },
+        { id: 230, name: "Polluted Air Filter", price: 1000, tier: "C" },
+        { id: 231, name: "ARC Synthetic Resin", price: 1000, tier: "C" },
+        { id: 232, name: "Resin", price: 1000, tier: "C" },
+        { id: 233, name: "Coolant", price: 1000, tier: "C" },
+        { id: 234, name: "Industrial Magnet", price: 1000, tier: "C" },
+        { id: 235, name: "Cracked Bioscanner", price: 1000, tier: "C" },
+        { id: 236, name: "Industrial Charger", price: 1000, tier: "C" },
+        { id: 237, name: "ARC Thermo Lining", price: 1000, tier: "C" },
+        { id: 238, name: "Humidifier", price: 1000, tier: "C" },
+        { id: 239, name: "ARC Performance Steel", price: 1000, tier: "C" },
+        { id: 240, name: "Headphones", price: 1000, tier: "C" },
+        { id: 241, name: "ARC Coolant", price: 1000, tier: "C" },
+        { id: 242, name: "Empty Wine Bottle", price: 1000, tier: "C" },
+        { id: 243, name: "Power Bank", price: 1000, tier: "C" },
+        { id: 244, name: "Mushroom", price: 1000, tier: "C" },
+        { id: 245, name: "Defibrillator", price: 1000, tier: "C" },
+        { id: 246, name: "Trigger Nade", price: 1000, tier: "C" },
+        { id: 247, name: "Jolt Mine", price: 850, tier: "C" },
+        { id: 248, name: "Shrapnel Grenade", price: 800, tier: "C" },
+        { id: 249, name: "Snap Blast Grenade", price: 800, tier: "C" },
+        { id: 250, name: "Shotgun Parts", price: 700, tier: "D" },
+        { id: 251, name: "Synthesized Fuel", price: 700, tier: "D" },
+        { id: 252, name: "Heavy Gun Parts", price: 700, tier: "D" },
+        { id: 253, name: "Medium Gun Parts", price: 700, tier: "D" },
+        { id: 254, name: "Light Gun Parts", price: 700, tier: "D" },
+        { id: 255, name: "Vertical Grip I", price: 640, tier: "D" },
+        { id: 256, name: "Mechanical Components", price: 640, tier: "D" },
+        { id: 257, name: "Stable Stock I", price: 640, tier: "D" },
+        { id: 258, name: "Herbal Bandage", price: 640, tier: "D" },
+        { id: 259, name: "Barricade Kit", price: 640, tier: "D" },
+        { id: 260, name: "Diving Goggles", price: 640, tier: "D" },
+        { id: 261, name: "Frying Pan", price: 640, tier: "D" },
+        { id: 262, name: "Dried-Out ARC Resin", price: 640, tier: "D" },
+        { id: 263, name: "Pop Trigger", price: 640, tier: "D" },
+        { id: 264, name: "Burned ARC Circuitry", price: 640, tier: "D" },
+        { id: 265, name: "Roots", price: 640, tier: "D" },
+        { id: 266, name: "Combat Mk. 1", price: 640, tier: "D" },
+        { id: 267, name: "Tactical Mk. 1", price: 640, tier: "D" },
+        { id: 268, name: "Damaged Hornet Driver", price: 640, tier: "D" },
+        { id: 269, name: "Olives", price: 640, tier: "D" },
+        { id: 270, name: "Ruined Handcuffs", price: 640, tier: "D" },
+        { id: 271, name: "Candle Holder", price: 640, tier: "D" },
+        { id: 272, name: "Angled Grip I", price: 640, tier: "D" },
+        { id: 273, name: "Degraded ARC Rubber", price: 640, tier: "D" },
+        { id: 274, name: "Compensator I", price: 640, tier: "D" },
+        { id: 275, name: "Muzzle Brake I", price: 640, tier: "D" },
+        { id: 276, name: "Rusty ARC Steel", price: 640, tier: "D" },
+        { id: 277, name: "Advanced ARC Powercell", price: 640, tier: "D" },
+        { id: 278, name: "Impure ARC Coolant", price: 640, tier: "D" },
+        { id: 279, name: "Light Shield", price: 640, tier: "D" },
+        { id: 280, name: "Ruined Parachute", price: 640, tier: "D" },
+        { id: 281, name: "Fireball Burner", price: 640, tier: "D" },
+        { id: 282, name: "Faded Photograph", price: 640, tier: "D" },
+        { id: 283, name: "Rusted Bolts", price: 640, tier: "D" },
+        { id: 284, name: "Tick Pod", price: 640, tier: "D" },
+        { id: 285, name: "Tattered ARC Lining", price: 640, tier: "D" },
+        { id: 286, name: "Apricot", price: 640, tier: "D" },
+        { id: 287, name: "Lemon", price: 640, tier: "D" },
+        { id: 288, name: "Ruined Baton", price: 640, tier: "D" },
+        { id: 289, name: "Metal Brackets", price: 640, tier: "D" },
+        { id: 290, name: "Household Cleaner", price: 640, tier: "D" },
+        { id: 291, name: "Prickly Pear", price: 640, tier: "D" },
+        { id: 292, name: "Durable Cloth", price: 640, tier: "D" },
+        { id: 293, name: "Shotgun Choke I", price: 640, tier: "D" },
+        { id: 294, name: "Damaged ARC Motion Core", price: 640, tier: "D" },
+        { id: 295, name: "Dog Collar", price: 640, tier: "D" },
+        { id: 296, name: "Tattered Clothes", price: 640, tier: "D" },
+        { id: 297, name: "Electrical Components", price: 640, tier: "D" },
+        { id: 298, name: "Binoculars", price: 640, tier: "D" },
+        { id: 299, name: "Expired Respirator", price: 640, tier: "D" },
+        { id: 300, name: "Ruined Tactical Vest", price: 640, tier: "D" },
+        { id: 301, name: "Noisemaker", price: 640, tier: "D" },
+        { id: 302, name: "Camera Lens", price: 640, tier: "D" },
+        { id: 303, name: "Ice Cream Scooper", price: 640, tier: "D" },
+        { id: 304, name: "Torn Blanket", price: 640, tier: "D" },
+        { id: 305, name: "Flame Spray", price: 640, tier: "D" },
+        { id: 306, name: "Seeker Grenade", price: 640, tier: "D" },
+        { id: 307, name: "Extended Light Mag I", price: 640, tier: "D" },
+        { id: 308, name: "Extended Medium Mag I", price: 640, tier: "D" },
+        { id: 309, name: "Looting Mk. 1", price: 640, tier: "D" },
+        { id: 310, name: "Extended Shotgun Mag I", price: 640, tier: "D" },
+        { id: 311, name: "Shield Recharger", price: 520, tier: "D" },
+        { id: 312, name: "Syringe", price: 500, tier: "D" },
+        { id: 313, name: "Moss", price: 500, tier: "D" },
+        { id: 314, name: "Processor", price: 500, tier: "D" },
+        { id: 315, name: "Sensors", price: 500, tier: "D" },
+        { id: 316, name: "Voltage Converter", price: 500, tier: "D" },
+        { id: 317, name: "Rope", price: 500, tier: "D" },
+        { id: 318, name: "Speaker Component", price: 500, tier: "D" },
+        { id: 319, name: "Pulse Mine", price: 470, tier: "D" },
+        { id: 320, name: "Simple Gun Parts", price: 330, tier: "D" },
+        { id: 321, name: "Duct Tape", price: 300, tier: "D" },
+        { id: 322, name: "Torch Ginger", price: 300, tier: "D" },
+        { id: 323, name: "Oil", price: 300, tier: "D" },
+        { id: 324, name: "Steel Spring", price: 300, tier: "D" },
+        { id: 325, name: "Canister", price: 300, tier: "D" },
+        { id: 326, name: "Li'l Smoke Grenade", price: 300, tier: "D" },
+        { id: 327, name: "Gas Grenade Trap", price: 300, tier: "D" },
+        { id: 328, name: "Great Mullein", price: 300, tier: "D" },
+        { id: 329, name: "Magnet", price: 300, tier: "D" },
+        { id: 330, name: "Adrenaline Shot", price: 300, tier: "D" },
+        { id: 331, name: "Damaged ARC Powercell", price: 293, tier: "D" },
+        { id: 332, name: "Crude Explosives", price: 270, tier: "D" },
+        { id: 333, name: "Volcanic Rock", price: 270, tier: "D" },
+        { id: 334, name: "Crumpled Plastic Bottle", price: 270, tier: "D" },
+        { id: 335, name: "Damaged Fireball Burner", price: 270, tier: "D" },
+        { id: 336, name: "Damaged Wasp Driver", price: 270, tier: "D" },
+        { id: 337, name: "Broken Handcuffs", price: 270, tier: "D" },
+        { id: 338, name: "Light Impact Grenade", price: 270, tier: "D" },
+        { id: 339, name: "Gas Grenade", price: 270, tier: "D" },
+        { id: 340, name: "Ruined Augment", price: 270, tier: "D" },
+        { id: 341, name: "Gas Mine", price: 270, tier: "D" },
+        { id: 342, name: "Damaged Tick Pod", price: 270, tier: "D" },
+        { id: 343, name: "Remote Raider Flare", price: 270, tier: "D" },
+        { id: 344, name: "ARC Powercell", price: 270, tier: "D" },
+        { id: 345, name: "Door Blocker", price: 270, tier: "D" },
+        { id: 346, name: "Number Plate", price: 270, tier: "D" },
+        { id: 347, name: "Bandage", price: 250, tier: "D" },
+        { id: 348, name: "Launcher Ammo", price: 250, tier: "D" },
+        { id: 349, name: "Battery", price: 250, tier: "D" },
+        { id: 350, name: "Wires", price: 200, tier: "D" },
+        { id: 351, name: "ARC Alloy", price: 200, tier: "D" },
+        { id: 352, name: "Green Light Stick", price: 150, tier: "D" },
+        { id: 353, name: "Blue Light Stick", price: 150, tier: "D" },
+        { id: 354, name: "Yellow Light Stick", price: 150, tier: "D" },
+        { id: 355, name: "Red Light Stick", price: 150, tier: "D" },
+        { id: 356, name: "Agave Juice", price: 123, tier: "D" },
+        { id: 357, name: "Dam Testing Annex Key", price: 100, tier: "D" },
+        { id: 358, name: "Blue Gate Village Key", price: 100, tier: "D" },
+        { id: 359, name: "Patrol Car Key", price: 100, tier: "D" },
+        { id: 360, name: "Spaceport Control Tower Key", price: 100, tier: "D" },
+        { id: 361, name: "Stella Montis Archives Key", price: 100, tier: "D" },
+        { id: 362, name: "Stella Montis Assembly Admin Key", price: 100, tier: "D" },
+        { id: 363, name: "Stella Montis Security Checkpoint Key", price: 100, tier: "D" },
+        { id: 364, name: "Blue Gate Cellar Key", price: 100, tier: "D" },
+        { id: 365, name: "Blue Gate Communication Tower Key", price: 100, tier: "D" },
+        { id: 366, name: "Buried City Residential Master Key", price: 100, tier: "D" },
+        { id: 367, name: "Spaceport Outskirts Bunker Key", price: 100, tier: "D" },
+        { id: 368, name: "Spaceport Container Storage Key", price: 100, tier: "D" },
+        { id: 369, name: "Dam Control Center Tower Key", price: 100, tier: "D" },
+        { id: 370, name: "Buried City JKV Employee Access Card", price: 100, tier: "D" },
+        { id: 371, name: "Dam Surveillance Key", price: 100, tier: "D" },
+        { id: 372, name: "Dam Utility Key", price: 100, tier: "D" },
+        { id: 373, name: "Spaceport Trench Tower Key", price: 100, tier: "D" },
+        { id: 374, name: "Spaceport Warehouse Key", price: 100, tier: "D" },
+        { id: 375, name: "Free Loadout Augment", price: 100, tier: "D" },
+        { id: 376, name: "Assorted Seeds", price: 100, tier: "D" },
+        { id: 377, name: "Blue Gate Confiscation Room Key", price: 100, tier: "D" },
+        { id: 378, name: "Stella Montis Medical Storage Key", price: 100, tier: "D" },
+        { id: 379, name: "Dam Staff Room Key", price: 100, tier: "D" },
+        { id: 380, name: "Buried City Hospital Key", price: 100, tier: "D" },
+        { id: 381, name: "Buried City Town Hall Key", price: 100, tier: "D" },
+        { id: 382, name: "Metal Parts", price: 75, tier: "D" },
+        { id: 383, name: "Plastic Parts", price: 60, tier: "D" },
+        { id: 384, name: "Fabric", price: 50, tier: "D" },
+        { id: 385, name: "Chemicals", price: 50, tier: "D" },
+        { id: 386, name: "Rubber Parts", price: 50, tier: "D" },
+        { id: 387, name: "Shotgun ammo", price: 20, tier: "D" },
+        { id: 388, name: "Heavy Ammo", price: 12, tier: "D" },
+        { id: 389, name: "Medium Ammo", price: 6, tier: "D" },
+        { id: 390, name: "Energy Clip", price: 5, tier: "D" },
+        { id: 391, name: "Light Ammo", price: 4, tier: "D" }
+];    
 
     let selectedItems = new Set();
 
@@ -176,35 +632,24 @@
         updateWishlist();
     }
 
-    function updateWishlist() {
-        const wishlistEl = document.getElementById('wishlist');
-        const totalValueEl = document.getElementById('total-value');
-        wishlistEl.innerHTML = '';
-        
-        let totalValue = 0;
-        const selected = lootItems.filter(item => selectedItems.has(item.id));
+    function renderGrid() {
+        const mainGrid = document.getElementById('mainGrid');
+        mainGrid.innerHTML = '';
+        lootItems.sort((a,b) => b.price - a.price).forEach(item => {
+            const isChecked = selectedItems.has(item.id);
+            const card = document.createElement('div');
+            card.className = `card ${item.tier} ${isChecked ? 'checked' : ''}`;
+            const safeName = item.name.replace(/[\\/:*?"<>|]/g, '');
 
-        if (selected.length === 0) {
-            wishlistEl.innerHTML = '<span style="color: #666; font-size: 0.9rem; grid-column: span 5;">아이템을 선택해 주세요.</span>';
-            totalValueEl.innerText = '0';
-        } else {
-            selected.forEach(item => {
-                totalValue += item.price;
-                const safeName = item.name.replace(/[\\/:*?"<>|]/g, '');
-                const div = document.createElement('div');
-                div.className = 'wishlist-item';
-                div.innerHTML = `
-                    <img src="${IMAGE_FOLDER}/${safeName}.webp" class="wishlist-icon" onerror="this.src='https://via.placeholder.com/40?text=?';">
-                    <div class="wishlist-info">
-                        <span class="wishlist-name">${item.name}</span>
-                        <span class="wishlist-price">${item.price.toLocaleString()}</span>
-                    </div>
-                `;
-                wishlistEl.appendChild(div);
-            });
-            totalValueEl.innerText = totalValue.toLocaleString();
-        }
-        localStorage.setItem(STORAGE_KEY, JSON.stringify([...selectedItems]));
+            card.onclick = () => toggleItem(item.id, card);
+            card.innerHTML = `
+                <div class="img-box"><img src="${IMAGE_FOLDER}/${safeName}.webp" onerror="this.src='https://via.placeholder.com/160';"></div>
+                <div class="name">${item.name}</div>
+                <div class="price">${item.price.toLocaleString()} UNIT</div>
+                <div class="tier-line"></div>
+            `;
+            mainGrid.appendChild(card);
+        });
     }
 
     function toggleItem(id, cardEl) {
@@ -216,35 +661,39 @@
             cardEl.classList.add('checked');
         }
         updateWishlist();
+        localStorage.setItem(STORAGE_KEY, JSON.stringify([...selectedItems]));
+    }
+
+    function updateWishlist() {
+        const wishlistEl = document.getElementById('wishlist');
+        const totalValueEl = document.getElementById('total-value');
+        wishlistEl.innerHTML = '';
+        let total = 0;
+        
+        lootItems.filter(item => selectedItems.has(item.id)).forEach(item => {
+            total += item.price;
+            const safeName = item.name.replace(/[\\/:*?"<>|]/g, '');
+            const div = document.createElement('div');
+            div.className = `wishlist-item`;
+            div.innerHTML = `
+                <img src="${IMAGE_FOLDER}/${safeName}.webp" class="wish-icon" onerror="this.src='https://via.placeholder.com/45';">
+                <div style="flex-grow: 1;">
+                    <div style="font-weight:bold; font-size:0.85rem;">${item.name}</div>
+                    <div style="color:var(--point-blue); font-size:0.8rem; font-weight:bold;">${item.price.toLocaleString()}</div>
+                </div>
+            `;
+            wishlistEl.appendChild(div);
+        });
+        totalValueEl.innerText = total.toLocaleString();
     }
 
     function clearStorage() {
-        if(confirm("모든 선택 내역을 초기화하시겠습니까?")) {
+        if(confirm("초기화하시겠습니까?")) {
             selectedItems.clear();
-            document.querySelectorAll('.card').forEach(c => c.classList.remove('checked'));
-            document.querySelectorAll('.check-btn').forEach(b => b.checked = false);
+            localStorage.removeItem(STORAGE_KEY);
+            renderGrid();
             updateWishlist();
         }
-    }
-
-    function renderGrid() {
-        const mainGrid = document.getElementById('mainGrid');
-        lootItems.sort((a,b) => b.price - a.price).forEach(item => {
-            const isChecked = selectedItems.has(item.id);
-            const card = document.createElement('div');
-            card.className = `card ${isChecked ? 'checked' : ''}`;
-            const safeName = item.name.replace(/[\\/:*?"<>|]/g, '');
-            const imgSrc = `${IMAGE_FOLDER}/${safeName}.webp`;
-
-            card.innerHTML = `
-                <input type="checkbox" class="check-btn" ${isChecked ? 'checked' : ''} onchange="toggleItem(${item.id}, this.parentNode)">
-                <div class="img-box"><img src="${imgSrc}" loading="lazy" onerror="this.src='https://via.placeholder.com/90x90?text=?';"></div>
-                <div class="name">${item.name}</div>
-                <div class="price">${item.price.toLocaleString()}</div>
-                <div class="tier ${item.tier}">${item.tier} Tier</div>
-            `;
-            mainGrid.appendChild(card);
-        });
     }
 
     init();
