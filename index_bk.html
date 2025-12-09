@@ -241,9 +241,6 @@
     </aside>
 
 <main class="main-content">
-    <div id="search-container" style="margin-bottom: 20px; position: relative;">
-        <input type="text" id="searchInput" placeholder="Search for items..." style="width: 100%; padding: 12px 20px; border-radius: 25px; border: 1px solid var(--border-tan); font-family: 'Rajdhani', sans-serif; font-size: 1rem; background: #fff;">
-    </div>
     <div class="grid" id="mainGrid"></div>
 </main>
 
@@ -251,7 +248,7 @@
     const IMAGE_FOLDER = "arc_raiders_images";
     const STORAGE_KEY = "arc_Unified_Ivory_Final";
 
-       const lootItems = [
+    const lootItems = [
         { id: 1, name: "Snap Hook", price: 14000, tier: "S" },
         { id: 2, name: "Queen Reactor", price: 13000, tier: "S" },
         { id: 3, name: "Matriarch Reactor", price: 13000, tier: "S" },
@@ -650,25 +647,14 @@
     function init() {
         const saved = localStorage.getItem(STORAGE_KEY);
         if (saved) selectedItems = new Set(JSON.parse(saved));
-        
-        document.getElementById('searchInput').addEventListener('input', (e) => {
-            renderGrid(e.target.value);
-        });
-
         renderGrid();
         updateWishlist();
     }
 
-    function renderGrid(filter = '') {
+    function renderGrid() {
         const mainGrid = document.getElementById('mainGrid');
         mainGrid.innerHTML = '';
-        const lowerCaseFilter = filter.toLowerCase();
-
-        const itemsToRender = lootItems.filter(item => 
-            item.name.toLowerCase().includes(lowerCaseFilter)
-        );
-
-        itemsToRender.sort((a,b) => b.price - a.price).forEach(item => {
+        lootItems.sort((a,b) => b.price - a.price).forEach(item => {
             const isChecked = selectedItems.has(item.id);
             const card = document.createElement('div');
             card.className = `card ${item.tier} ${isChecked ? 'checked' : ''}`;
