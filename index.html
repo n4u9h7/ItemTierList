@@ -9,7 +9,7 @@
         :root {
             --bg-ivory: #f2ede4; 
             --sidebar-ivory: #e6e0d4; 
-            --card-white: #ffffff;
+            --card-white: #f2ede42f;
             --text-main: #3a352a;
             --border-tan: #dcd3c1;
             --point-blue: #45a29e;
@@ -21,6 +21,9 @@
             
             --tier-b: #3498db;
             --tier-c: #27ae60;
+            
+            /* 고정 버튼을 위한 패딩 변수 */
+            --reset-padding: 20px; 
         }
 
         body {
@@ -33,7 +36,7 @@
             overflow: hidden;
         }
 
-        /* --- Sidebar 영역 (생략) --- */
+        /* --- Sidebar 영역 --- */
         #sidebar {
             width: 340px;
             background: var(--sidebar-ivory);
@@ -42,15 +45,17 @@
             flex-direction: column;
             box-shadow: 4px 0 15px rgba(0,0,0,0.05);
             z-index: 1000;
+            /* height: 100%; 는 body의 flex-grow에 의해 불필요 */
         }
 
-        /* 로고가 영역에 꽉 차도록 설정 (생략) */
+        /* 로고가 영역에 꽉 차도록 설정 */
         .logo-container {
             width: 100%;
             height: 180px;
             background: #ffffff;
             border-bottom: 2px solid var(--border-tan);
             overflow: hidden;
+            flex-shrink: 0; /* 크기가 줄어들지 않도록 고정 */
         }
 
         .logo-container img {
@@ -59,12 +64,25 @@
             object-fit: cover;
         }
 
-        .sidebar-content {
-            padding: 20px;
+        /* 스크롤 가능한 콘텐츠 영역 */
+        .scrollable-content {
+            padding: var(--reset-padding); /* 상하좌우 패딩 */
+            padding-bottom: 0; /* 버튼 영역과 겹치지 않도록 하단 패딩 제거 */
             flex-grow: 1;
-            overflow-y: auto;
+            overflow-y: auto; /* 이 부분만 스크롤됨 */
         }
 
+        /* --- 고정된 버튼 영역 스타일 --- */
+        #reset-container {
+            flex-shrink: 0; /* 크기가 줄어들지 않도록 고정 */
+            padding: var(--reset-padding);
+            padding-top: 10px; /* 콘텐츠와의 간격 조정 */
+            background: var(--sidebar-ivory);
+            border-top: 1px solid var(--border-tan);
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.03); /* 상단에 그림자 추가 */
+        }
+
+        /* --- 나머지 스타일 유지 --- */
         .section-header {
             font-family: 'Orbitron', sans-serif;
             font-size: 0.85rem;
@@ -114,7 +132,7 @@
             border: none;
             padding: 12px;
             width: 100%;
-            margin-top: 20px;
+            /* margin-top: 20px; 제거 */
             font-family: 'Orbitron', sans-serif;
             cursor: pointer;
             border-radius: 8px;
@@ -161,13 +179,11 @@
             /* 기본 content는 여기서 제거하고 개별 티어에서 설정 */
         }
         
-        /* ❗❗❗ TIER 텍스트 앞에 티어 명칭(S, A, B, C) 추가 ❗❗❗ */
+        /* TIER 텍스트 앞에 티어 명칭(S, A, B, C) 추가 */
         .card.S::before { content: "S TIER"; background: var(--tier-s); }
         .card.A::before { content: "A TIER"; background: var(--tier-a); }
         .card.B::before { content: "B TIER"; background: var(--tier-b); }
         .card.C::before { content: "C TIER"; background: var(--tier-c); }
-        /* D 티어가 있다면 추가: .card.D::before { content: "D TIER"; background: gray; } */
-        /* ---------------------------------------------------- */
 
         .card:hover { transform: translateY(-10px); border-color: var(--point-blue); }
         .card.checked { background: #fdfaf5; border: 2px solid var(--point-blue); }
@@ -210,16 +226,19 @@
     <div class="logo-container">
         <img src="logo.png" alt="ARC RAIDERS" onerror="this.src='https://via.placeholder.com/340x180';">
     </div>
-    <div class="sidebar-content">
+    
+    <div class="scrollable-content">
         <div class="section-header">PHARMING TARGETS</div>
         <div class="net-worth-box">
             <div style="font-size: 0.75rem; opacity: 0.7;">TOTAL NET WORTH</div>
             <div class="total-value" id="total-value">0</div>
         </div>
         <div id="wishlist"></div>
+    </div>
+    <div id="reset-container">
         <button class="btn-reset" onclick="clearStorage()">RESET SYSTEM</button>
     </div>
-</aside>
+    </aside>
 
 <main class="main-content">
     <div class="grid" id="mainGrid"></div>
@@ -621,7 +640,7 @@
         { id: 389, name: "Medium Ammo", price: 6, tier: "D" },
         { id: 390, name: "Energy Clip", price: 5, tier: "D" },
         { id: 391, name: "Light Ammo", price: 4, tier: "D" }
-];    
+    ];
 
     let selectedItems = new Set();
 
