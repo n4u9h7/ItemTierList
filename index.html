@@ -80,6 +80,20 @@
             border-top: 1px solid var(--border-tan);
             box-shadow: 0 -4px 10px rgba(0,0,0,0.03); /* 상단에 그림자 추가 */
         }
+        
+        /* 💡 새로 추가된 버튼 스타일 */
+        .btn-show-modal {
+            background: var(--point-blue);
+            color: #fff;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            margin-bottom: 10px; /* Reset 버튼과의 간격 */
+            font-family: 'Orbitron', sans-serif;
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: bold;
+        }
 
         /* --- 나머지 스타일 유지 --- */
         .section-header {
@@ -140,24 +154,17 @@
         /* --- Main Content 영역 (스크롤 설정) --- */
         .main-content { 
             flex-grow: 1; 
-            /* 이 영역 자체를 스크롤 가능하게 유지 */
             overflow-y: auto; 
-            /* 상단 패딩은 고정된 검색창이 내용물을 가리지 않도록 조정 */
             padding: 0 40px 40px 40px; 
         }
 
-        /* 💡 검색 항목 상단 고정 스타일 추가 */
+        /* 검색 항목 상단 고정 스타일 */
         #search-container {
-            /* Sticky 적용을 위해 position: relative 제거 */
-            
-            /* Sticky 속성 */
             position: sticky; 
-            top: 0; /* 화면 상단에 고정 */
-            z-index: 10; /* 다른 콘텐츠 위에 표시 */
-            
-            /* main-content의 상단 패딩을 여기서 보정하고, 하단 여백 추가 */
+            top: 0; 
+            z-index: 10; 
             padding: 40px 0 20px 0; 
-            background: var(--bg-ivory); /* 스크롤 시 아래 내용이 비치지 않도록 배경색 지정 */
+            background: var(--bg-ivory);
         }
         
         #searchInput {
@@ -174,10 +181,9 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
             gap: 30px;
-            /* grid가 바로 search-container 아래에 위치하게 됨 */
         }
 
-        /* --- 아이콘 사이즈 확대가 적용된 카드 디자인 --- */
+        /* --- 카드 스타일 --- */
         .card {
             background: var(--card-white);
             border-radius: 15px;
@@ -189,7 +195,6 @@
             position: relative;
         }
 
-        /* 기본 TIER 텍스트 제거 */
         .card::before {
             position: absolute;
             top: 15px; left: 50%;
@@ -201,10 +206,8 @@
             padding: 2px 12px;
             border-radius: 10px;
             letter-spacing: 1px;
-            /* 기본 content는 여기서 제거하고 개별 티어에서 설정 */
         }
         
-        /* TIER 텍스트 앞에 티어 명칭(S, A, B, C) 추가 */
         .card.S::before { content: "S TIER"; background: var(--tier-s); }
         .card.A::before { content: "A TIER"; background: var(--tier-a); }
         .card.B::before { content: "B TIER"; background: var(--tier-b); }
@@ -213,7 +216,6 @@
         .card:hover { transform: translateY(-10px); border-color: var(--point-blue); }
         .card.checked { background: #fdfaf5; border: 2px solid var(--point-blue); }
 
-        /* 아이템 이미지 아이콘 사이즈 확대 부분 (생략) */
         .img-box { 
             width: 80px;
             height: 80px; 
@@ -243,6 +245,100 @@
 
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-thumb { background: var(--border-tan); border-radius: 3px; }
+        
+        /* --- 모달 스타일 --- */
+        .modal-overlay {
+            display: none; /* 초기에는 숨김 */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: var(--bg-ivory);
+            color: var(--text-main);
+            padding: 30px;
+            border-radius: 15px;
+            width: 80%;
+            max-width: 900px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+            max-height: 90%;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            color: var(--point-blue);
+            border-bottom: 2px solid var(--border-tan);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            color: var(--point-pink);
+            line-height: 1;
+        }
+
+        /* 모달 내부 리스트 스타일 */
+        #modal-wishlist-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .modal-item-card {
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid var(--border-tan);
+            transition: transform 0.2s;
+        }
+        
+        /* 티어 라인 재사용 */
+        .modal-item-card.S { border-bottom: 5px solid var(--tier-s); }
+        .modal-item-card.A { border-bottom: 5px solid var(--tier-a); }
+        .modal-item-card.B { border-bottom: 5px solid var(--tier-b); }
+        .modal-item-card.C { border-bottom: 5px solid var(--tier-c); }
+
+
+        .modal-item-icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 10px;
+            object-fit: contain;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .modal-item-name {
+            font-weight: bold;
+            font-size: 1rem;
+            margin-bottom: 5px;
+            height: 40px;
+            overflow: hidden;
+        }
+
+        .modal-item-price {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--point-blue);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
     </style>
 </head>
 <body>
@@ -261,6 +357,7 @@
         <div id="wishlist"></div>
     </div>
     <div id="reset-container">
+        <button class="btn-show-modal" onclick="openModal()">VIEW SELECTED ITEMS</button>
         <button class="btn-reset" onclick="clearStorage()">RESET SYSTEM</button>
     </div>
     </aside>
@@ -277,6 +374,8 @@
 <script>
     const IMAGE_FOLDER = "arc_raiders_images";
     const STORAGE_KEY = "arc_Unified_Ivory_Final";
+
+    // lootItems는 data.js에서 로드되었다고 가정합니다.
 
     let selectedItems = new Set();
 
@@ -297,6 +396,12 @@
         mainGrid.innerHTML = '';
         const lowerCaseFilter = filter.toLowerCase();
 
+        // data.js가 로드되어 lootItems가 정의되어 있다고 가정
+        if (typeof lootItems === 'undefined') {
+            mainGrid.innerHTML = '<p>Error: lootItems data not loaded. Check data.js path.</p>';
+            return;
+        }
+        
         const itemsToRender = lootItems.filter(item => 
             item.name.toLowerCase().includes(lowerCaseFilter)
         );
@@ -321,10 +426,13 @@
     function toggleItem(id, cardEl) {
         if (selectedItems.has(id)) {
             selectedItems.delete(id);
-            cardEl.classList.remove('checked');
+            // 메인 그리드에서 해당 카드를 찾아 checked 클래스를 제거
+            if (cardEl) cardEl.classList.remove('checked');
+            // 모달이 열려 있다면 닫거나 업데이트해야 하지만, UX를 위해 닫기만 하거나 무시
         } else {
             selectedItems.add(id);
-            cardEl.classList.add('checked');
+            // 메인 그리드에서 해당 카드를 찾아 checked 클래스를 추가
+            if (cardEl) cardEl.classList.add('checked');
         }
         updateWishlist();
         localStorage.setItem(STORAGE_KEY, JSON.stringify([...selectedItems]));
@@ -351,18 +459,83 @@
             wishlistEl.appendChild(div);
         });
         totalValueEl.innerText = total.toLocaleString();
+
+        // 모달이 열려 있을 경우, 모달도 업데이트
+        if (document.getElementById('big-wishlist-modal').style.display === 'flex') {
+            updateModalContent();
+        }
     }
 
     function clearStorage() {
-        if(confirm("초기화하시겠습니까?")) {
+        if(confirm("모든 획득 목록을 초기화하시겠습니까?")) {
             selectedItems.clear();
             localStorage.removeItem(STORAGE_KEY);
             renderGrid();
             updateWishlist();
+            closeModal(); // 초기화 시 모달 닫기
         }
     }
+    
+    // 💡 모달 관련 함수
+    function updateModalContent() {
+        const modalContentEl = document.getElementById('modal-wishlist-content');
+        const modalTotalValueEl = document.getElementById('modal-total-value');
+        modalContentEl.innerHTML = '';
+        let total = 0;
+
+        const selectedList = lootItems.filter(item => selectedItems.has(item.id));
+        
+        if (selectedList.length === 0) {
+            modalContentEl.innerHTML = '<p style="text-align: center; color: var(--point-pink); font-size: 1.2rem;">선택된 아이템이 없습니다.</p>';
+        } else {
+            selectedList.forEach(item => {
+                total += item.price;
+                const safeName = item.name.replace(/[\\/:*?"<>|]/g, '');
+                const div = document.createElement('div');
+                div.className = `modal-item-card ${item.tier}`; // 티어 색상 표시를 위해 티어 클래스 사용
+                div.innerHTML = `
+                    <img src="${IMAGE_FOLDER}/${safeName}.webp" class="modal-item-icon" onerror="this.src='https://via.placeholder.com/70';">
+                    <div class="modal-item-name">${item.name}</div>
+                    <div class="modal-item-price">${item.price.toLocaleString()} UNIT</div>
+                `;
+                modalContentEl.appendChild(div);
+            });
+        }
+
+        modalTotalValueEl.innerText = total.toLocaleString();
+    }
+
+    function openModal() {
+        updateModalContent();
+        document.getElementById('big-wishlist-modal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('big-wishlist-modal').style.display = 'none';
+    }
+
+    // 모달 외부 클릭 시 닫기 이벤트 리스너
+    document.addEventListener('DOMContentLoaded', () => {
+        const modal = document.getElementById('big-wishlist-modal');
+        if (modal) {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+        }
+    });
 
     init();
 </script>
+
+<div id="big-wishlist-modal" class="modal-overlay">
+    <div class="modal-content">
+        <span class="modal-close" onclick="closeModal()">&times;</span>
+        <div class="modal-header">TARGET ACQUISITION LIST (<span id="modal-total-value">0</span> UNITS)</div>
+        <div id="modal-wishlist-content">
+            </div>
+    </div>
+</div>
 </body>
 </html>
