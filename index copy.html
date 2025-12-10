@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARC RAIDERS | Ivory Unified Database</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* 폰트 및 색상 변수 설정 */
+        :root {
+            /* 컬러 팔레트 (아이보리/다크 모드 혼합) */
+            --bg-ivory: #f2ede4; /* 배경색 */
+            --sidebar-ivory: #e6e0d4; /* 사이드바 배경 */
+            --card-white: #f2ede42f; /* 카드 배경 (투명) */
+            --text-main: #3a352a; /* 기본 텍스트 */
+            --border-tan: #dcd3c1; /* 연한 경계선 */
+            --point-blue: #45a29e; /* 강조색 (파란색 계열) */
+            --point-pink: #d33f6a; /* 강조색 (빨간색 계열) */
+            
+            /* 계층별 색상 */
+            --tier-s: #f1c40f; /* S: Gold/Yellow */
+            --tier-a: #d33f6a; /* A: Pink/Red */
+            --tier-b: #3498db; /* B: Blue */
+            --tier-c: #27ae60; /* C: Green */
+            --tier-d: #808080; /* D: Gray */
+            
+            --reset-padding: 20px;
+        }
+
+        /* 기본 스타일 및 폰트 적용 */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Rajdhani', sans-serif;
+            background-color: var(--bg-ivory);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+            overflow: hidden; /* 전체 스크롤 방지 */
+        }
+        
+        /* 스크롤바 스타일 (웹킷 기반 브라우저) */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--point-blue);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--border-tan);
+        }
+
+        /* --- 사이드바 (위시리스트) 스타일 --- */
+        #sidebar {
+            width: 300px;
+            background-color: var(--sidebar-ivory);
+            border-right: 2px solid var(--border-tan);
+            padding: var(--reset-padding);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo-container img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid var(--border-tan);
+        }
+
+        .section-header {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--point-pink);
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid var(--point-pink);
+            text-align: center;
+        }
+
+        .net-worth-box {
+            background: var(--text-main);
+            color: var(--bg-ivory);
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .total-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--tier-s);
+            letter-spacing: 1px;
+        }
+
+        #wishlist {
+            flex-grow: 1;
+            overflow-y: auto;
+            max-height: calc(100vh - 400px); /* 임시 높이 설정 */
+            padding-right: 10px;
+        }
+
+        .wishlist-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px dashed var(--border-tan);
+        }
+        
+        .wishlist-item:last-child {
+            border-bottom: none;
+        }
+
+        .wish-icon {
+            width: 45px;
+            height: 45px;
+            margin-right: 15px;
+            object-fit: contain;
+            border: 1px solid var(--border-tan);
+            background: white;
+            padding: 3px;
+            border-radius: 5px;
+        }
+
+        #reset-container {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 2px solid var(--border-tan);
+        }
+
+        .btn-reset {
+            width: 100%;
+            padding: 10px;
+            background-color: var(--point-pink);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-reset:hover {
+            background-color: #a82e54;
+        }
+        
+        .scrollable-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* --- 메인 컨텐츠 (그리드) 스타일 --- */
+        .main-content {
+            flex-grow: 1;
+            padding: var(--reset-padding);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        #search-container {
+            margin-bottom: 20px;
+            padding: 5px 0;
+            border-bottom: 2px solid var(--border-tan);
+        }
+
+        #searchInput {
+            width: 100%;
+            padding: 12px 20px;
+            border-radius: 25px;
+            border: 1px solid var(--border-tan);
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+            background: white;
+            box-sizing: border-box;
+        }
+
+        #grid-scroll-container {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding-right: 15px; /* 스크롤바 공간 확보 */
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+            padding-top: 10px;
+        }
+
+        .card {
+            background-color: white;
+            border: 3px solid var(--border-tan);
+            border-radius: 8px;
+            overflow: hidden;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .card.checked {
+            border-color: var(--point-blue);
+            box-shadow: 0 0 10px var(--point-blue);
+            transform: scale(0.98);
+            opacity: 0.7;
+        }
+        
+        /* 계층별 테두리 색상 적용 */
+        .card.S { border-top: 5px solid var(--tier-s); }
+        .card.A { border-top: 5px solid var(--tier-a); }
+        .card.B { border-top: 5px solid var(--tier-b); }
+        .card.C { border-top: 5px solid var(--tier-c); }
+        .card.D { border-top: 5px solid var(--tier-d); }
+
+
+        .img-box {
+            height: 120px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            background: #fdfcf9;
+        }
+
+        .img-box img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .name {
+            font-weight: 700;
+            padding: 10px 5px 2px;
+            font-size: 0.95rem;
+            color: var(--text-main);
+            height: 40px; /* 이름 길이가 달라도 높이 고정 */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: normal;
+        }
+
+        .price {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--point-blue);
+            padding-bottom: 10px;
+        }
+        
+        .tier-line {
+            height: 5px;
+            background-color: var(--border-tan);
+        }
+        
+        /* 카드 하단 티어 색상 줄 */
+        .card.S .tier-line { background-color: var(--tier-s); }
+        .card.A .tier-line { background-color: var(--tier-a); }
+        .card.B .tier-line { background-color: var(--tier-b); }
+        .card.C .tier-line { background-color: var(--tier-c); }
+        .card.D .tier-line { background-color: var(--tier-d); }
+    </style>
+</head>
+<body>
+
+<aside id="sidebar">
+    <div class="logo-container">
+        <img src="logo.png" alt="ARC RAIDERS" onerror="this.src='https://via.placeholder.com/260x140/e6e0d4/3a352a?text=ARC+RAIDERS+DB';">
+    </div>
+    
+    <div class="scrollable-content">
+        <div class="section-header">PHARMING TARGETS</div>
+        <div class="net-worth-box">
+            <div style="font-size: 0.75rem; opacity: 0.7;">TOTAL NET WORTH</div>
+            <div class="total-value" id="total-value">0</div>
+        </div>
+        
+        <div id="wishlist"></div>
+    </div>
+    
+    <div id="reset-container">
+        <button class="btn-reset" onclick="clearStorage()">RESET SYSTEM</button>
+    </div>
+</aside>
+
+<main class="main-content">
+    <div id="search-container">
+        <input type="text" id="searchInput" placeholder="Search for items... (아이템 이름 검색)" style="width: 100%;">
+    </div>
+    
+    <div id="grid-scroll-container">
+        <div class="grid" id="mainGrid"></div>
+    </div>
+</main>
+
+<script src="data.js"></script> 
+
+<script>
+    // 이미지 폴더 이름과 로컬 저장소 키 정의
+    const IMAGE_FOLDER = "arc_raiders_images"; // 이미지가 저장된 폴더명 (예: arc_raiders_images/Snap Hook.webp)
+    const STORAGE_KEY = "arc_Unified_Ivory_Final";
+
+    // 선택된 아이템 ID를 저장하는 Set
+    let selectedItems = new Set();
+
+    /**
+     * 초기화 함수: 로컬 스토리지에서 저장된 아이템을 불러오고 이벤트 리스너를 설정합니다.
+     */
+    function init() {
+        // 저장된 데이터 로드
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) selectedItems = new Set(JSON.parse(saved));
+        
+        // 검색 입력 이벤트 리스너
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            renderGrid(e.target.value);
+        });
+
+        // 그리드와 위시리스트 렌더링
+        renderGrid();
+        updateWishlist();
+    }
+
+    /**
+     * 아이템 그리드를 필터링하여 렌더링합니다.
+     * @param {string} filter - 검색 필터 문자열
+     */
+    function renderGrid(filter = '') {
+        const mainGrid = document.getElementById('mainGrid');
+        mainGrid.innerHTML = '';
+        const lowerCaseFilter = filter.toLowerCase();
+
+        // 필터링: 이름에 필터 문자열이 포함된 아이템만 선택
+        const itemsToRender = lootItems.filter(item => 
+            item.name.toLowerCase().includes(lowerCaseFilter)
+        );
+
+        // 가격 내림차순 정렬 후 렌더링
+        itemsToRender.sort((a,b) => b.price - a.price).forEach(item => {
+            const isChecked = selectedItems.has(item.id);
+            const card = document.createElement('div');
+            
+            // Tier에 따라 CSS 클래스를 적용합니다.
+            card.className = `card ${item.tier} ${isChecked ? 'checked' : ''}`;
+            
+            // 이미지 파일 이름에 사용될 안전한 이름 (한국어 부분은 제거)
+            const safeName = item.name.replace(/[\\/:*?"<>|]/g, '').replace(/\s\(.*\)/, '');
+
+            card.onclick = () => toggleItem(item.id, card);
+            card.innerHTML = `
+                <div class="img-box">
+                    <img src="${IMAGE_FOLDER}/${safeName}.webp" 
+                         alt="${item.name}"
+                         onerror="this.src='https://via.placeholder.com/160/e6e0d4/3a352a?text=${safeName.substring(0, 10)}';">
+                </div>
+                <div class="name">${item.name}</div>
+                <div class="price">${item.price.toLocaleString()} UNIT</div>
+                <div class="tier-line"></div>
+            `;
+            mainGrid.appendChild(card);
+        });
+    }
+
+    /**
+     * 아이템 선택 상태를 토글합니다.
+     * @param {number} id - 아이템 ID
+     * @param {HTMLElement} cardEl - 해당 아이템의 카드 DOM 요소
+     */
+    function toggleItem(id, cardEl) {
+        if (selectedItems.has(id)) {
+            selectedItems.delete(id);
+            cardEl.classList.remove('checked');
+        } else {
+            selectedItems.add(id);
+            cardEl.classList.add('checked');
+        }
+        updateWishlist();
+        // 로컬 스토리지에 저장
+        localStorage.setItem(STORAGE_KEY, JSON.stringify([...selectedItems]));
+    }
+
+    /**
+     * 위시리스트를 업데이트하고 총 가치를 계산하여 표시합니다.
+     */
+    function updateWishlist() {
+        const wishlistEl = document.getElementById('wishlist');
+        const totalValueEl = document.getElementById('total-value');
+        wishlistEl.innerHTML = '';
+        let total = 0;
+        
+        // 선택된 아이템만 필터링하고 총 가치 계산
+        lootItems.filter(item => selectedItems.has(item.id)).forEach(item => {
+            total += item.price;
+            const safeName = item.name.replace(/[\\/:*?"<>|]/g, '').replace(/\s\(.*\)/, '');
+
+            const div = document.createElement('div');
+            div.className = `wishlist-item`;
+            div.innerHTML = `
+                <img src="${IMAGE_FOLDER}/${safeName}.webp" class="wish-icon" 
+                     alt="${item.name}"
+                     onerror="this.src='https://via.placeholder.com/45/e6e0d4/3a352a?text=Item';">
+                <div style="flex-grow: 1;">
+                    <div style="font-weight:bold; font-size:0.85rem;">${item.name}</div>
+                    <div style="color:var(--point-blue); font-size:0.8rem; font-weight:bold;">${item.price.toLocaleString()}</div>
+                </div>
+            `;
+            wishlistEl.appendChild(div);
+        });
+        
+        // 총 가치 표시 업데이트
+        totalValueEl.innerText = total.toLocaleString();
+    }
+
+    /**
+     * 로컬 스토리지의 모든 저장된 데이터를 초기화합니다.
+     */
+    function clearStorage() {
+        if(confirm("모든 위시리스트 데이터를 초기화하시겠습니까?")) {
+            selectedItems.clear();
+            localStorage.removeItem(STORAGE_KEY);
+            renderGrid();
+            updateWishlist();
+        }
+    }
+
+    // 페이지 로드 시 초기화 함수 실행
+    init();
+</script>
+</body>
+</html>
