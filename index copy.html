@@ -21,7 +21,6 @@
             
             --tier-b: #3498db;
             --tier-c: #27ae60;
-            --tier-d: #8c8c8c; /* D 티어 색상 임시 추가 */
             
             /* 고정 버튼을 위한 패딩 변수 */
             --reset-padding: 20px; 
@@ -48,13 +47,14 @@
             z-index: 1000;
         }
 
+        /* 로고가 영역에 꽉 차도록 설정 */
         .logo-container {
             width: 100%;
             height: 180px;
             background: #ffffff;
             border-bottom: 2px solid var(--border-tan);
             overflow: hidden;
-            flex-shrink: 0;
+            flex-shrink: 0; /* 크기가 줄어들지 않도록 고정 */
         }
 
         .logo-container img {
@@ -63,30 +63,32 @@
             object-fit: cover;
         }
 
+        /* 스크롤 가능한 콘텐츠 영역 */
         .scrollable-content {
-            padding: var(--reset-padding);
-            padding-bottom: 0;
+            padding: var(--reset-padding); /* 상하좌우 패딩 */
+            padding-bottom: 0; /* 버튼 영역과 겹치지 않도록 하단 패딩 제거 */
             flex-grow: 1;
-            overflow-y: auto;
+            overflow-y: auto; /* 이 부분만 스크롤됨 */
         }
 
         /* --- 고정된 버튼 영역 스타일 --- */
         #reset-container {
-            flex-shrink: 0;
+            flex-shrink: 0; /* 크기가 줄어들지 않도록 고정 */
             padding: var(--reset-padding);
-            padding-top: 10px;
+            padding-top: 10px; /* 콘텐츠와의 간격 조정 */
             background: var(--sidebar-ivory);
             border-top: 1px solid var(--border-tan);
-            box-shadow: 0 -4px 10px rgba(0,0,0,0.03);
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.03); /* 상단에 그림자 추가 */
         }
         
+        /* 💡 새로 추가된 버튼 스타일 */
         .btn-show-modal {
             background: var(--point-blue);
             color: #fff;
             border: none;
             padding: 12px;
             width: 100%;
-            margin-bottom: 10px;
+            margin-bottom: 10px; /* Reset 버튼과의 간격 */
             font-family: 'Orbitron', sans-serif;
             cursor: pointer;
             border-radius: 8px;
@@ -173,56 +175,15 @@
             font-family: 'Rajdhani', sans-serif; 
             font-size: 1rem; 
             background: #fff;
-            margin-bottom: 15px; /* 필터 영역과의 간격 */
-        }
-        
-        /* 💡 필터 컨테이너 스타일 */
-        #filter-container {
-            background: #ffffff;
-            border-radius: 12px;
-            padding: 15px;
-            border: 1px solid var(--border-tan);
-            margin-bottom: 20px;
         }
 
-        .filter-group {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 10px 20px;
-            /* Type 필터가 제거되어 border-bottom 제거 */
-        }
-
-        .filter-label {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.8rem;
-            color: var(--point-pink);
-            min-width: 50px;
-            flex-shrink: 0;
-        }
-
-        .filter-option {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: bold;
-        }
-
-        .filter-option input[type="checkbox"] {
-            margin-right: 5px;
-            accent-color: var(--point-blue);
-            width: 14px;
-            height: 14px;
-        }
-
-        /* --- 카드 스타일 --- */
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
             gap: 30px;
         }
 
+        /* --- 카드 스타일 --- */
         .card {
             background: var(--card-white);
             border-radius: 15px;
@@ -251,7 +212,6 @@
         .card.A::before { content: "A TIER"; background: var(--tier-a); }
         .card.B::before { content: "B TIER"; background: var(--tier-b); }
         .card.C::before { content: "C TIER"; background: var(--tier-c); }
-        .card.D::before { content: "D TIER"; background: var(--tier-d); }
 
         .card:hover { transform: translateY(-10px); border-color: var(--point-blue); }
         .card.checked { background: #fdfaf5; border: 2px solid var(--point-blue); }
@@ -282,14 +242,13 @@
         .A .tier-line { background: var(--tier-a); }
         .B .tier-line { background: var(--tier-b); }
         .C .tier-line { background: var(--tier-c); }
-        .D .tier-line { background: var(--tier-d); }
 
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-thumb { background: var(--border-tan); border-radius: 3px; }
         
         /* --- 모달 스타일 --- */
         .modal-overlay {
-            display: none;
+            display: none; /* 초기에는 숨김 */
             position: fixed;
             top: 0;
             left: 0;
@@ -355,7 +314,6 @@
         .modal-item-card.A { border-bottom: 5px solid var(--tier-a); }
         .modal-item-card.B { border-bottom: 5px solid var(--tier-b); }
         .modal-item-card.C { border-bottom: 5px solid var(--tier-c); }
-        .modal-item-card.D { border-bottom: 5px solid var(--tier-d); }
 
 
         .modal-item-icon {
@@ -407,9 +365,6 @@
 <main class="main-content">
     <div id="search-container">
         <input type="text" id="searchInput" placeholder="Search for items..." style="width: 100%; padding: 12px 20px; border-radius: 25px; border: 1px solid var(--border-tan); font-family: 'Rajdhani', sans-serif; font-size: 1rem; background: #fff;">
-        
-        <div id="filter-container">
-            </div>
     </div>
     <div class="grid" id="mainGrid"></div>
 </main>
@@ -419,108 +374,14 @@
 <script>
     const IMAGE_FOLDER = "arc_raiders_images";
     const STORAGE_KEY = "arc_Unified_Ivory_Final";
-    const FILTER_STORAGE_KEY = "arc_Unified_Ivory_Filters";
 
-    // 💡 Type 항목 제거, Tier 필터만 유지
-    const FILTER_OPTIONS = {
-        'Tier': ['S', 'A', 'B', 'C', 'D'], 
-    };
+    // lootItems는 data.js에서 로드되었다고 가정합니다.
 
     let selectedItems = new Set();
-    let activeFilters = {}; 
 
-    function loadFilters() {
-        const savedFilters = localStorage.getItem(FILTER_STORAGE_KEY);
-        if (savedFilters) {
-            activeFilters = JSON.parse(savedFilters);
-        } else {
-            // Tier만 기본값 설정 (ALL)
-            activeFilters['Tier'] = ['ALL'];
-        }
-    }
-
-    function saveFilters() {
-        localStorage.setItem(FILTER_STORAGE_KEY, JSON.stringify(activeFilters));
-    }
-    
-    function renderFilterCheckboxes() {
-        const container = document.getElementById('filter-container');
-        container.innerHTML = '';
-
-        for (const group in FILTER_OPTIONS) {
-            const groupDiv = document.createElement('div');
-            groupDiv.className = 'filter-group';
-
-            const label = document.createElement('div');
-            label.className = 'filter-label';
-            label.innerText = group.toUpperCase();
-            groupDiv.appendChild(label);
-
-            // 'ALL' 항목 추가
-            const allOption = document.createElement('label');
-            allOption.className = 'filter-option';
-            const allInput = document.createElement('input');
-            allInput.type = 'checkbox';
-            allInput.value = 'ALL';
-            allInput.checked = activeFilters[group].includes('ALL');
-            allInput.onchange = () => handleFilterChange(group, 'ALL');
-            allOption.appendChild(allInput);
-            allOption.appendChild(document.createTextNode('ALL'));
-            groupDiv.appendChild(allOption);
-
-            // 개별 필터 항목 추가
-            FILTER_OPTIONS[group].forEach(option => {
-                const optionLabel = document.createElement('label');
-                optionLabel.className = 'filter-option';
-                const input = document.createElement('input');
-                input.type = 'checkbox';
-                input.value = option;
-                // ALL이 선택되지 않은 경우에만 개별 항목의 상태를 반영
-                input.checked = !activeFilters[group].includes('ALL') && activeFilters[group].includes(option); 
-                input.onchange = () => handleFilterChange(group, option);
-                optionLabel.appendChild(input);
-                optionLabel.appendChild(document.createTextNode(option));
-                groupDiv.appendChild(optionLabel);
-            });
-
-            container.appendChild(groupDiv);
-        }
-    }
-
-    function handleFilterChange(group, option) {
-        let current = activeFilters[group];
-
-        if (option === 'ALL') {
-            current = ['ALL'];
-        } else {
-            if (current.includes('ALL')) {
-                current = [];
-            }
-            
-            const index = current.indexOf(option);
-            if (index > -1) {
-                current.splice(index, 1);
-            } else {
-                current.push(option);
-            }
-
-            if (current.length === 0) {
-                current = ['ALL'];
-            }
-        }
-
-        activeFilters[group] = current;
-        saveFilters();
-        renderFilterCheckboxes();
-        renderGrid(document.getElementById('searchInput').value);
-    }
-    
     function init() {
         const saved = localStorage.getItem(STORAGE_KEY);
         if (saved) selectedItems = new Set(JSON.parse(saved));
-        
-        loadFilters();
-        renderFilterCheckboxes();
         
         document.getElementById('searchInput').addEventListener('input', (e) => {
             renderGrid(e.target.value);
@@ -535,30 +396,20 @@
         mainGrid.innerHTML = '';
         const lowerCaseFilter = filter.toLowerCase();
 
+        // data.js가 로드되어 lootItems가 정의되어 있다고 가정
         if (typeof lootItems === 'undefined') {
             mainGrid.innerHTML = '<p>Error: lootItems data not loaded. Check data.js path.</p>';
             return;
         }
         
-        const itemsToRender = lootItems.filter(item => {
-            // 1. 검색어 필터
-            const matchesSearch = item.name.toLowerCase().includes(lowerCaseFilter);
-
-            // 2. 티어 필터
-            const tierFilter = activeFilters['Tier'];
-            const matchesTier = tierFilter.includes('ALL') || tierFilter.includes(item.tier);
-            
-            // Type 필터 로직 제거됨
-
-            return matchesSearch && matchesTier;
-        });
+        const itemsToRender = lootItems.filter(item => 
+            item.name.toLowerCase().includes(lowerCaseFilter)
+        );
 
         itemsToRender.sort((a,b) => b.price - a.price).forEach(item => {
             const isChecked = selectedItems.has(item.id);
             const card = document.createElement('div');
-            const tierClass = item.tier ? item.tier : ''; 
-
-            card.className = `card ${tierClass} ${isChecked ? 'checked' : ''}`;
+            card.className = `card ${item.tier} ${isChecked ? 'checked' : ''}`;
             const safeName = item.name.replace(/[\\/:*?"<>|]/g, '');
 
             card.onclick = () => toggleItem(item.id, card);
@@ -575,9 +426,12 @@
     function toggleItem(id, cardEl) {
         if (selectedItems.has(id)) {
             selectedItems.delete(id);
+            // 메인 그리드에서 해당 카드를 찾아 checked 클래스를 제거
             if (cardEl) cardEl.classList.remove('checked');
+            // 모달이 열려 있다면 닫거나 업데이트해야 하지만, UX를 위해 닫기만 하거나 무시
         } else {
             selectedItems.add(id);
+            // 메인 그리드에서 해당 카드를 찾아 checked 클래스를 추가
             if (cardEl) cardEl.classList.add('checked');
         }
         updateWishlist();
@@ -606,24 +460,19 @@
         });
         totalValueEl.innerText = total.toLocaleString();
 
+        // 모달이 열려 있을 경우, 모달도 업데이트
         if (document.getElementById('big-wishlist-modal').style.display === 'flex') {
             updateModalContent();
         }
     }
 
     function clearStorage() {
-        if(confirm("모든 획득 목록과 필터 설정을 초기화하시겠습니까?")) {
+        if(confirm("모든 획득 목록을 초기화하시겠습니까?")) {
             selectedItems.clear();
             localStorage.removeItem(STORAGE_KEY);
-            
-            // 💡 필터 설정 초기화 (Tier만 ALL로)
-            activeFilters['Tier'] = ['ALL'];
-            localStorage.setItem(FILTER_STORAGE_KEY, JSON.stringify(activeFilters));
-
-            renderFilterCheckboxes();
             renderGrid();
             updateWishlist();
-            closeModal();
+            closeModal(); // 초기화 시 모달 닫기
         }
     }
     
@@ -643,8 +492,7 @@
                 total += item.price;
                 const safeName = item.name.replace(/[\\/:*?"<>|]/g, '');
                 const div = document.createElement('div');
-                const tierClass = item.tier ? item.tier : '';
-                div.className = `modal-item-card ${tierClass}`;
+                div.className = `modal-item-card ${item.tier}`; // 티어 색상 표시를 위해 티어 클래스 사용
                 div.innerHTML = `
                     <img src="${IMAGE_FOLDER}/${safeName}.webp" class="modal-item-icon" onerror="this.src='https://via.placeholder.com/70';">
                     <div class="modal-item-name">${item.name}</div>
@@ -666,6 +514,7 @@
         document.getElementById('big-wishlist-modal').style.display = 'none';
     }
 
+    // 모달 외부 클릭 시 닫기 이벤트 리스너
     document.addEventListener('DOMContentLoaded', () => {
         const modal = document.getElementById('big-wishlist-modal');
         if (modal) {
