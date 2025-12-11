@@ -27,6 +27,11 @@
             --fixed-height-mobile: 80px; 
         }
 
+        /* 💡 수정 1: 가로 스크롤 제거 */
+        html, body {
+            overflow-x: hidden; 
+        }
+        
         body {
             background-color: var(--bg-ivory);
             color: var(--text-main);
@@ -34,7 +39,7 @@
             margin: 0;
             display: flex;
             height: 100vh;
-            overflow-x: hidden; 
+            /* overflow-x: hidden; 제거, html/body로 이동 */
             overflow-y: hidden; 
         }
 
@@ -173,6 +178,7 @@
             background: #398884;
         }
 
+        /* 💡 수정 3: 검색 입력창 (버튼이 나타날 때 너비 조정되도록 flex-grow만 남김) */
         #searchInput {
             flex-grow: 1;
             padding: 12px 20px; 
@@ -199,7 +205,7 @@
             background: var(--point-blue);
             color: #fff;
             margin-bottom: 10px; 
-            position: relative; /* 💡 배지 자식 요소의 위치 지정을 위해 추가 */
+            position: relative; 
         }
         .btn-reset {
             background: var(--point-pink);
@@ -209,31 +215,31 @@
         /* --- 선택 아이템 개수 배지 스타일 --- */
         .item-count-badge {
             position: absolute;
-            top: -10px; /* 버튼 위로 올리기 */
-            right: 15px; /* 버튼 오른쪽 끝에 가깝게 */
+            top: -10px; 
+            right: 15px; 
             background: var(--point-pink);
             color: #fff;
             font-family: 'Orbitron', sans-serif;
-            /* 💡 폰트 사이즈를 약간 줄이고 패딩 조정 */
             font-size: 0.65rem; 
             font-weight: bold;
-            padding: 6px 10px; /* 패딩을 늘려 높이를 확보 */
+            padding: 6px 10px; 
             border-radius: 12px;
             z-index: 10;
-            min-width: 40px; /* 최소 너비 확보 */
-            white-space: nowrap; /* 내용이 한 줄로 유지되도록 */
+            min-width: 40px; 
+            white-space: nowrap; 
             text-align: center;
             opacity: 0.9;
             transition: opacity 0.3s;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             display: none; 
         }
-        /* 💡 데스크톱 버튼 컨테이너 (relative) 내부의 버튼 위에 배치를 위한 조정 */
+        /* 데스크톱 버튼 컨테이너 (relative) 내부의 버튼 위에 배치를 위한 조정 */
         #reset-container-desktop > .btn-show-modal > .item-count-badge {
             top: -10px;
             right: 10px;
         }
 
+        
         /* --- 나머지 공통 스타일 유지 --- */
         .section-header {
             font-family: 'Orbitron', sans-serif;
@@ -267,6 +273,7 @@
                 grid-template-columns: 1fr 1fr;
             }
         }
+
 
         .wishlist-item {
             background: #ffffff;
@@ -333,7 +340,8 @@
             display: flex;
             flex-wrap: wrap;
             align-items: center;
-            gap: 10px 20px;
+            /* 💡 수정 1: 모바일 환경에서 필터 옵션 간격을 줄여 한 줄로 표시되도록 조정 */
+            gap: 10px 10px; /* 가로 간격을 10px로 줄임 */
         }
 
         .filter-label {
@@ -628,15 +636,15 @@
                 z-index: 150;
                 box-sizing: border-box; 
             }
-            /* 💡 모바일 배지 위치 조정 */
+            /* 모바일 배지 위치 조정 */
             #reset-container-mobile .btn-show-modal {
                 position: relative;
             }
             #reset-container-mobile .btn-show-modal > .item-count-badge {
                 top: -8px;
                 right: -8px; 
-                font-size: 0.6rem; /* 뱃지 크기 더 작게 */
-                padding: 4px 8px; /* 패딩 조정 */
+                font-size: 0.6rem; 
+                padding: 4px 8px; 
                 min-width: 35px;
             }
 
@@ -779,7 +787,6 @@
     let selectedItems = new Set();
     let activeFilters = {}; 
     
-    // 💡 총합 금액을 간결하게 포맷하는 함수 추가 (예: 1234567 -> 1.2M)
     function formatCoin(num) {
         if (num >= 1000000) {
             return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
@@ -1007,13 +1014,13 @@
         });
         
         const totalString = total.toLocaleString() + ' Coin';
-        const formattedTotal = formatCoin(total); // 💡 간결하게 포맷된 금액
+        const formattedTotal = formatCoin(total); 
         
         // 1. 총 금액 업데이트
         if (totalValueMain) totalValueMain.innerText = totalString;
         if (totalValueSidebar) totalValueSidebar.innerText = totalString;
 
-        // 2. 💡 아이템 개수 및 금액 뱃지 업데이트
+        // 2. 아이템 개수 및 금액 뱃지 업데이트
         const badgeContent = `${itemCount} / ${formattedTotal}`;
         
         if (itemCountBadgeDesktop) {
