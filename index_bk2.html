@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-    <title>ARC RAIDERS | Item Value Database</title>
+    <title>ARC RAIDERS | Ivory Unified Database</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght+500;700&display=swap');
 
@@ -114,7 +114,7 @@
             position: fixed;
             top: 0;
             right: 0;
-            z-index: 9999; /* Z-index 높임 */
+            z-index: 1000;
             background: var(--bg-ivory);
             border-bottom: 1px solid var(--border-tan);
             box-shadow: 0 4px 10px rgba(0,0,0,0.05);
@@ -526,7 +526,6 @@
                 min-height: auto; 
                 box-shadow: none;
                 border-bottom: 1px solid var(--border-tan);
-                z-index: 1; /* 명시적으로 z-index 설정 */
             }
             .scrollable-content { padding-bottom: 10px; }
             .logo-container { display: none; }
@@ -641,7 +640,7 @@
 
 <div id="fixed-header-container">
     <div class="net-worth-box">
-        <div class="net-worth-label">TOTAL COIN</div>
+        <div class="net-worth-label">TOTAL NET WORTH</div>
         <div class="total-value" id="total-value-display">0 Coin</div>
     </div>
 
@@ -660,16 +659,16 @@
     </div>
     
     <div class="scrollable-content">
-        <div class="section-header" id="sidebar-section-header">TARGET ITEMS</div>
+        <div class="section-header" id="sidebar-section-header">PHARMING TARGETS</div>
         <div id="wishlist"></div>
     </div>
 
     <div id="reset-container-desktop"> 
         <button class="btn-show-modal" onclick="openModal()">
-            VIEW
+            VIEW SELECTED ITEMS
             <span id="item-count-badge-desktop" class="item-count-badge">0 / 0</span>
         </button>
-        <button class="btn-reset" onclick="clearStorage()">RESET</button>
+        <button class="btn-reset" onclick="clearStorage()">RESET SYSTEM</button>
     </div>
 </aside>
 
@@ -685,10 +684,10 @@
 
 <div id="reset-container-mobile">
     <button class="btn-show-modal" onclick="openModal()">
-        VIEW
+        VIEW SELECTED ITEMS
         <span id="item-count-badge-mobile" class="item-count-badge">0 / 0</span>
     </button>
-    <button class="btn-reset" onclick="clearStorage()">RESET</button>
+    <button class="btn-reset" onclick="clearStorage()">RESET SYSTEM</button>
 </div>
 
 <script src="data.js"></script>
@@ -938,6 +937,8 @@
         if (itemCount === 0 && window.innerWidth <= 768) {
             wishlistEl.style.marginBottom = '0';
         } else {
+            // 데스크톱에서는 20px, 모바일에서는 3열 그리드 내 간격으로 처리되므로 굳이 margin을 줄 필요 없음
+            // 다만 기존 코드에서 모바일 2열일 때 gap이 10px로 지정되어 있었으므로, 3열 변경 후 모바일 CSS에서 gap을 8px로 변경했으니 이 부분은 괜찮음.
             wishlistEl.style.marginBottom = '20px';
         }
 
@@ -1029,7 +1030,7 @@
     <div class="modal-content">
         <span class="modal-close" onclick="closeModal()">&times;</span>
         <div class="modal-header">
-            <div class="modal-header-title">TARGET ITEM LIST</div>
+            <div class="modal-header-title">TARGET ACQUISITION LIST</div>
             <span id="modal-total-value-display">0 Coin</span>
         </div>
         <div id="modal-wishlist-content">
