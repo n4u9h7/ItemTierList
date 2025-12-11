@@ -2,9 +2,10 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
     <title>ARC RAIDERS | Ivory Unified Database</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght+500;700&display=swap');
 
         :root {
             --bg-ivory: #f2ede4; 
@@ -15,16 +16,15 @@
             --point-blue: #45a29e;
             --point-pink: #d33f6a;
             
-            /* S/A 티어 색상 교환 적용됨 */
-            --tier-s: #f1c40f; /* S티어: 노란색 */
-            --tier-a: #d33f6a; /* A티어: 핑크색 */
+            --tier-s: #f1c40f; 
+            --tier-a: #d33f6a; 
             
             --tier-b: #3498db;
             --tier-c: #27ae60;
-            --tier-d: #8c8c8c; /* D 티어 색상 임시 추가 */
+            --tier-d: #8c8c8c;
             
-            /* 고정 버튼을 위한 패딩 변수 */
-            --reset-padding: 20px; 
+            --padding-base: 20px; 
+            --fixed-height-mobile: 80px; 
         }
 
         body {
@@ -34,10 +34,13 @@
             margin: 0;
             display: flex;
             height: 100vh;
-            overflow: hidden;
+            overflow-x: hidden; 
+            overflow-y: hidden; 
         }
 
-        /* --- Sidebar 영역 --- */
+        /* ---------------------------------- */
+        /* 데스크톱 기본 레이아웃 (769px 이상) */
+        /* ---------------------------------- */
         #sidebar {
             width: 340px;
             background: var(--sidebar-ivory);
@@ -46,8 +49,10 @@
             flex-direction: column;
             box-shadow: 4px 0 15px rgba(0,0,0,0.05);
             z-index: 1000;
+            flex-shrink: 0;
         }
 
+        /* 데스크톱 로고: #sidebar 내부에 위치 */
         .logo-container {
             width: 100%;
             height: 180px;
@@ -62,38 +67,174 @@
             height: 100%;
             object-fit: cover;
         }
-
-        .scrollable-content {
-            padding: var(--reset-padding);
-            padding-bottom: 0;
-            flex-grow: 1;
-            overflow-y: auto;
+        
+        /* 모바일 헤더와 로고는 데스크톱에서 숨김 */
+        #mobile-header-fixed,
+        .logo-container-mobile {
+            display: none;
         }
 
-        /* --- 고정된 버튼 영역 스타일 --- */
-        #reset-container {
+        .scrollable-content {
+            padding: var(--padding-base);
+            padding-bottom: 0;
+            flex-grow: 1;
+            overflow-y: auto; 
+        }
+
+        /* 데스크톱: 버튼 컨테이너 */
+        #reset-container-desktop {
             flex-shrink: 0;
-            padding: var(--reset-padding);
+            padding: var(--padding-base);
             padding-top: 10px;
             background: var(--sidebar-ivory);
             border-top: 1px solid var(--border-tan);
             box-shadow: 0 -4px 10px rgba(0,0,0,0.03);
+            position: relative; 
         }
         
-        .btn-show-modal {
+        /* 모바일용 버튼 컨테이너는 데스크톱에서 숨김 */
+        #reset-container-mobile {
+            display: none; 
+        }
+
+        .main-content { 
+            flex-grow: 1; 
+            overflow-y: auto; 
+            padding: 0 40px 40px 40px; 
+        }
+
+        /* 데스크톱: 검색 항목 상단 고정 */
+        #search-container {
+            position: sticky; 
+            top: 0; 
+            z-index: 10; 
+            padding: 20px 0 20px 0; 
+            background: var(--bg-ivory);
+            box-shadow: 0 4px 5px rgba(0,0,0,0.02); 
+        }
+        
+        /* ---------------------------------- */
+        /* 금액 박스 (Search Container 안에 있음, 고정됨) */
+        /* ---------------------------------- */
+        .net-worth-box {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px; 
+            border: 1px solid var(--border-tan);
+        }
+        
+        .total-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            text-align: right;
+            color: var(--point-blue);
+            font-weight: bold;
+        }
+
+        /* ---------------------------------- */
+        /* 검색 그룹 및 최상단 이동 버튼 스타일 */
+        /* ---------------------------------- */
+        .search-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px; 
+        }
+
+        #go-top-button {
             background: var(--point-blue);
             color: #fff;
             border: none;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            line-height: 45px;
+            text-align: center;
+            cursor: pointer;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s, margin-right 0.3s, width 0.3s, min-width 0.3s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            
+            width: 0; 
+            min-width: 0;
+            margin-right: 0;
+            padding: 0;
+            flex-shrink: 0;
+        }
+        
+        #go-top-button.visible {
+             width: 45px;
+             min-width: 45px;
+             margin-right: 10px;
+        }
+        
+        #go-top-button:hover {
+            background: #398884;
+        }
+
+        #searchInput {
+            flex-grow: 1;
+            padding: 12px 20px; 
+            border-radius: 25px; 
+            border: 1px solid var(--border-tan); 
+            font-family: 'Rajdhani', sans-serif; 
+            font-size: 1rem; 
+            background: #fff;
+            box-sizing: border-box; 
+            margin-bottom: 0; 
+        }
+        
+        /* --- 공통 버튼 스타일 --- */
+        .btn-show-modal, .btn-reset { 
+            border: none;
             padding: 12px;
-            width: 100%;
-            margin-bottom: 10px;
+            width: 100%; 
             font-family: 'Orbitron', sans-serif;
             cursor: pointer;
             border-radius: 8px;
             font-weight: bold;
         }
+        .btn-show-modal {
+            background: var(--point-blue);
+            color: #fff;
+            margin-bottom: 10px; 
+            position: relative; /* 💡 배지 자식 요소의 위치 지정을 위해 추가 */
+        }
+        .btn-reset {
+            background: var(--point-pink);
+            color: #fff;
+        }
+        
+        /* --- 선택 아이템 개수 배지 스타일 --- */
+        .item-count-badge {
+            position: absolute;
+            top: -10px; /* 버튼 위로 올리기 */
+            right: 15px; /* 버튼 오른쪽 끝에 가깝게 */
+            background: var(--point-pink);
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            /* 💡 폰트 사이즈를 약간 줄이고 패딩 조정 */
+            font-size: 0.65rem; 
+            font-weight: bold;
+            padding: 6px 10px; /* 패딩을 늘려 높이를 확보 */
+            border-radius: 12px;
+            z-index: 10;
+            min-width: 40px; /* 최소 너비 확보 */
+            white-space: nowrap; /* 내용이 한 줄로 유지되도록 */
+            text-align: center;
+            opacity: 0.9;
+            transition: opacity 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: none; 
+        }
+        /* 💡 데스크톱 버튼 컨테이너 (relative) 내부의 버튼 위에 배치를 위한 조정 */
+        #reset-container-desktop > .btn-show-modal > .item-count-badge {
+            top: -10px;
+            right: 10px;
+        }
 
-        /* --- 나머지 스타일 유지 --- */
+        /* --- 나머지 공통 스타일 유지 --- */
         .section-header {
             font-family: 'Orbitron', sans-serif;
             font-size: 0.85rem;
@@ -106,77 +247,80 @@
             margin-bottom: 20px;
             letter-spacing: 1px;
         }
-
-        .net-worth-box {
-            background: #ffffff;
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 20px;
-            border: 1px solid var(--border-tan);
+        
+        .mobile-separator {
+            width: 100%;
+            height: 1px;
+            background: var(--border-tan);
+            margin: 15px 0 25px 0;
         }
-
-        .total-value {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.8rem;
-            text-align: right;
-            color: var(--point-blue);
-            font-weight: bold;
+        
+        /* 데스크톱 기본 위시리스트 스타일 (수직 스택) */
+        #wishlist { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px; 
         }
-
-        #wishlist { display: flex; flex-direction: column; gap: 10px; }
+        @media (max-width: 768px) {
+            #wishlist {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+            }
+        }
 
         .wishlist-item {
             background: #ffffff;
             border-radius: 8px;
-            padding: 10px;
+            padding: 8px; 
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px; 
             border: 1px solid var(--border-tan);
+            
+            flex-direction: column; 
+            align-items: flex-start;
+            text-align: left;
+        }
+        @media (min-width: 769px) {
+            .wishlist-item {
+                flex-direction: row; 
+                align-items: center;
+            }
         }
 
-        .wish-icon { width: 45px; height: 45px; border-radius: 4px; object-fit: contain; background: #f9f9f9; }
 
-        .btn-reset {
-            background: var(--point-pink);
-            color: #fff;
-            border: none;
-            padding: 12px;
+        .wish-icon { 
+            width: 35px; 
+            height: 35px; 
+            border-radius: 4px; 
+            object-fit: contain; 
+            background: #f9f9f9; 
+            flex-shrink: 0;
+            margin-bottom: 5px; 
+        }
+        @media (min-width: 769px) {
+            .wish-icon {
+                margin-bottom: 0;
+            }
+        }
+
+
+        .wishlist-item > div {
             width: 100%;
-            font-family: 'Orbitron', sans-serif;
-            cursor: pointer;
-            border-radius: 8px;
-            font-weight: bold;
         }
 
-        /* --- Main Content 영역 (스크롤 설정) --- */
-        .main-content { 
-            flex-grow: 1; 
-            overflow-y: auto; 
-            padding: 0 40px 40px 40px; 
+        .wishlist-item > div > div:first-child {
+            font-weight:bold; 
+            font-size: 0.8rem; 
+        }
+        .wishlist-item > div > div:last-child {
+            color:var(--point-blue); 
+            font-weight:bold; 
+            font-size: 0.75rem; 
         }
 
-        /* 검색 항목 상단 고정 스타일 */
-        #search-container {
-            position: sticky; 
-            top: 0; 
-            z-index: 10; 
-            padding: 40px 0 20px 0; 
-            background: var(--bg-ivory);
-        }
+
         
-        #searchInput {
-            width: 100%; 
-            padding: 12px 20px; 
-            border-radius: 25px; 
-            border: 1px solid var(--border-tan); 
-            font-family: 'Rajdhani', sans-serif; 
-            font-size: 1rem; 
-            background: #fff;
-            margin-bottom: 15px; /* 필터 영역과의 간격 */
-        }
-        
-        /* 💡 필터 컨테이너 스타일 */
         #filter-container {
             background: #ffffff;
             border-radius: 12px;
@@ -190,7 +334,6 @@
             flex-wrap: wrap;
             align-items: center;
             gap: 10px 20px;
-            /* Type 필터가 제거되어 border-bottom 제거 */
         }
 
         .filter-label {
@@ -216,9 +359,9 @@
             height: 14px;
         }
 
-        /* --- 카드 스타일 --- */
         .grid {
             display: grid;
+            /* 데스크톱 기본 설정 */
             grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
             gap: 30px;
         }
@@ -233,7 +376,7 @@
             border: 1px solid var(--border-tan);
             position: relative;
         }
-
+        
         .card::before {
             position: absolute;
             top: 15px; left: 50%;
@@ -275,7 +418,13 @@
         }
 
         .name { font-size: 1.1rem; font-weight: bold; margin-bottom: 8px; height: 45px; overflow: hidden; }
-        .price { font-size: 1.4rem; font-weight: bold; opacity: 0.9; }
+        
+        .price { 
+            font-size: 1.4rem; 
+            font-weight: bold; 
+            color: var(--point-blue); 
+            opacity: 1; 
+        }
 
         .tier-line { height: 6px; border-radius: 3px; margin-top: 20px; }
         .S .tier-line { background: var(--tier-s); }
@@ -316,11 +465,29 @@
 
         .modal-header {
             font-family: 'Orbitron', sans-serif;
-            font-size: 1.5rem;
-            color: var(--point-blue);
+            color: var(--text-main); 
             border-bottom: 2px solid var(--border-tan);
             padding-bottom: 15px;
             margin-bottom: 20px;
+            display: flex; 
+            align-items: baseline;
+            justify-content: space-between;
+        }
+        
+        .modal-header-title {
+             font-size: 1.5rem;
+             white-space: nowrap;
+        }
+
+        /* 💡 모달 헤더 금액 강조 스타일 (데스크톱) */
+        #modal-total-value-display {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem; 
+            color: var(--point-blue); 
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-align: right;
+            line-height: 1;
         }
 
         .modal-close {
@@ -334,7 +501,7 @@
             line-height: 1;
         }
 
-        /* 모달 내부 리스트 스타일 */
+        /* 데스크톱 모달: 3~4열 */
         #modal-wishlist-content {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -350,7 +517,6 @@
             transition: transform 0.2s;
         }
         
-        /* 티어 라인 재사용 */
         .modal-item-card.S { border-bottom: 5px solid var(--tier-s); }
         .modal-item-card.A { border-bottom: 5px solid var(--tier-a); }
         .modal-item-card.B { border-bottom: 5px solid var(--tier-b); }
@@ -371,7 +537,8 @@
             font-weight: bold;
             font-size: 1rem;
             margin-bottom: 5px;
-            height: 40px;
+            /* 텍스트 줄바꿈을 위해 높이 확보 */
+            min-height: 40px; 
             overflow: hidden;
         }
 
@@ -380,6 +547,149 @@
             color: var(--point-blue);
             font-weight: bold;
             font-size: 1.2rem;
+        }
+        
+        /* ---------------------------------- */
+        /* 💡 모바일 미디어 쿼리 (768px 이하) */
+        /* ---------------------------------- */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column; 
+                height: auto; 
+                overflow-y: auto; 
+            }
+            
+            /* 1. 사이드바 처리 */
+            #sidebar {
+                width: 100%; 
+                border-right: none;
+                padding-top: 0; 
+                border-bottom: 1px solid var(--border-tan);
+                box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+                z-index: 50; 
+                height: auto; 
+                overflow: visible; 
+            }
+            .scrollable-content {
+                overflow-y: visible; 
+                padding-bottom: 10px; 
+            }
+            
+            #sidebar-net-worth-box {
+                margin-bottom: 20px;
+                display: block !important;
+            }
+            #main-net-worth-box {
+                display: none !important;
+            }
+
+            /* 데스크톱 로고와 버튼 숨김 */
+            .logo-container, #reset-container-desktop { 
+                display: none; 
+            }
+            
+            /* 2. 메인 콘텐츠 처리 */
+            .main-content {
+                padding: var(--padding-base); 
+                padding-top: 0; 
+                padding-bottom: calc(var(--fixed-height-mobile) + var(--padding-base)); 
+                overflow-y: visible; 
+            }
+
+            /* 3. 검색 및 필터 영역 */
+            #search-container {
+                position: sticky; 
+                top: 0; 
+                left: 0;
+                width: 100%;
+                z-index: 100; 
+                padding: var(--padding-base); 
+                padding-top: 10px; 
+                padding-bottom: 10px; 
+                background: var(--bg-ivory);
+                border-bottom: 1px solid var(--border-tan);
+                box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+                box-sizing: border-box; 
+                padding-top: 10px; 
+            }
+            
+            /* 4. 모바일 하단 고정 버튼 컨테이너 */
+            #reset-container-mobile {
+                display: flex; 
+                gap: 10px;    
+                align-items: center; 
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                background: var(--sidebar-ivory); 
+                padding: 10px var(--padding-base) var(--padding-base) var(--padding-base); 
+                box-shadow: 0 -4px 10px rgba(0,0,0,0.1);
+                z-index: 150;
+                box-sizing: border-box; 
+            }
+            /* 💡 모바일 배지 위치 조정 */
+            #reset-container-mobile .btn-show-modal {
+                position: relative;
+            }
+            #reset-container-mobile .btn-show-modal > .item-count-badge {
+                top: -8px;
+                right: -8px; 
+                font-size: 0.6rem; /* 뱃지 크기 더 작게 */
+                padding: 4px 8px; /* 패딩 조정 */
+                min-width: 35px;
+            }
+
+            /* 5. 버튼 스타일 조정 */
+            .btn-show-modal, .btn-reset {
+                flex-grow: 1; 
+                width: auto;  
+                margin-bottom: 0; 
+            }
+            
+            /* 6. 메인 그리드 레이아웃 조정 */
+            .grid {
+                grid-template-columns: 1fr 1fr; 
+                gap: 15px;
+            }
+            
+            /* 7. 모바일 모달 헤더 금액 두 줄 분리 및 정렬 */
+            .modal-content {
+                width: 95%; 
+                padding: 20px;
+            }
+            .modal-header {
+                flex-direction: column; 
+                align-items: flex-start;
+                justify-content: flex-start;
+                padding-bottom: 10px;
+            }
+            .modal-header-title {
+                font-size: 1.2rem;
+                margin-bottom: 5px; 
+                color: var(--text-main);
+            }
+            #modal-total-value-display {
+                font-size: 1.5rem; 
+                text-align: left;
+            }
+            
+            /* 8. 모달 목록 2열 고정 */
+            #modal-wishlist-content {
+                grid-template-columns: 1fr 1fr; 
+                gap: 10px; 
+            }
+            .modal-item-icon {
+                width: 50px; 
+                height: 50px;
+            }
+            .modal-item-name {
+                font-size: 0.85rem; 
+                min-height: 30px; 
+            }
+            .modal-item-price {
+                font-size: 1rem; 
+            }
         }
     </style>
 </head>
@@ -391,28 +701,58 @@
     </div>
     
     <div class="scrollable-content">
-        <div class="section-header">PHARMING TARGETS</div>
-        <div class="net-worth-box">
+        <div class="section-header" id="sidebar-section-header">PHARMING TARGETS</div>
+        
+        <div class="net-worth-box" id="sidebar-net-worth-box">
             <div style="font-size: 0.75rem; opacity: 0.7;">TOTAL NET WORTH</div>
-            <div class="total-value" id="total-value">0</div>
+            <div class="total-value" id="total-value-sidebar">0 Coin</div>
         </div>
+        
         <div id="wishlist"></div>
     </div>
-    <div id="reset-container">
-        <button class="btn-show-modal" onclick="openModal()">VIEW SELECTED ITEMS</button>
+    <div id="reset-container-desktop"> 
+        <button class="btn-show-modal" onclick="openModal()">
+            VIEW SELECTED ITEMS
+            <span id="item-count-badge-desktop" class="item-count-badge">0 / 0</span>
+        </button>
         <button class="btn-reset" onclick="clearStorage()">RESET SYSTEM</button>
     </div>
-    </aside>
+</aside>
 
-<main class="main-content">
-    <div id="search-container">
-        <input type="text" id="searchInput" placeholder="Search for items..." style="width: 100%; padding: 12px 20px; border-radius: 25px; border: 1px solid var(--border-tan); font-family: 'Rajdhani', sans-serif; font-size: 1rem; background: #fff;">
+<main class="main-content" id="main-content">
+    <div id="search-container"> 
+        
+        <div class="net-worth-box" id="main-net-worth-box">
+            <div style="font-size: 0.75rem; opacity: 0.7;">TOTAL NET WORTH</div>
+            <div class="total-value" id="total-value-main">0 Coin</div>
+        </div>
+        
+        <div class="search-group">
+            <button id="go-top-button" onclick="scrollToTop()">▲</button>
+            <input type="text" id="searchInput" placeholder="Search for items..." >
+        </div>
         
         <div id="filter-container">
             </div>
+        
+        <div class="mobile-separator"></div>
+        
+        <div class="section-header" style="margin-bottom: 0; padding: 5px 15px; background: none; border: none; font-size: 1rem; color: var(--point-blue); border-bottom: 2px solid var(--border-tan);">
+             ACQUISITION LIST 
+        </div>
+
     </div>
+    
     <div class="grid" id="mainGrid"></div>
 </main>
+
+<div id="reset-container-mobile">
+    <button class="btn-show-modal" onclick="openModal()">
+        VIEW SELECTED ITEMS
+        <span id="item-count-badge-mobile" class="item-count-badge">0 / 0</span>
+    </button>
+    <button class="btn-reset" onclick="clearStorage()">RESET SYSTEM</button>
+</div>
 
 <script src="data.js"></script>
 
@@ -420,21 +760,42 @@
     const IMAGE_FOLDER = "arc_raiders_images";
     const STORAGE_KEY = "arc_Unified_Ivory_Final";
     const FILTER_STORAGE_KEY = "arc_Unified_Ivory_Filters";
+    
+    const mainContent = document.getElementById('main-content');
+    const goTopButton = document.getElementById('go-top-button');
+    const sidebar = document.getElementById('sidebar');
 
-    // 💡 Type 항목 제거, Tier 필터만 유지
+    const totalValueMain = document.getElementById('total-value-main');
+    const totalValueSidebar = document.getElementById('total-value-sidebar'); 
+    
+    const itemCountBadgeDesktop = document.getElementById('item-count-badge-desktop');
+    const itemCountBadgeMobile = document.getElementById('item-count-badge-mobile');
+
+
     const FILTER_OPTIONS = {
         'Tier': ['S', 'A', 'B', 'C', 'D'], 
     };
 
     let selectedItems = new Set();
     let activeFilters = {}; 
+    
+    // 💡 총합 금액을 간결하게 포맷하는 함수 추가 (예: 1234567 -> 1.2M)
+    function formatCoin(num) {
+        if (num >= 1000000) {
+            return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+        }
+        if (num >= 1000) {
+            return (num / 1000).toFixed(0) + 'K';
+        }
+        return num.toLocaleString();
+    }
+
 
     function loadFilters() {
         const savedFilters = localStorage.getItem(FILTER_STORAGE_KEY);
         if (savedFilters) {
             activeFilters = JSON.parse(savedFilters);
         } else {
-            // Tier만 기본값 설정 (ALL)
             activeFilters['Tier'] = ['ALL'];
         }
     }
@@ -456,7 +817,6 @@
             label.innerText = group.toUpperCase();
             groupDiv.appendChild(label);
 
-            // 'ALL' 항목 추가
             const allOption = document.createElement('label');
             allOption.className = 'filter-option';
             const allInput = document.createElement('input');
@@ -468,14 +828,12 @@
             allOption.appendChild(document.createTextNode('ALL'));
             groupDiv.appendChild(allOption);
 
-            // 개별 필터 항목 추가
             FILTER_OPTIONS[group].forEach(option => {
                 const optionLabel = document.createElement('label');
                 optionLabel.className = 'filter-option';
                 const input = document.createElement('input');
                 input.type = 'checkbox';
                 input.value = option;
-                // ALL이 선택되지 않은 경우에만 개별 항목의 상태를 반영
                 input.checked = !activeFilters[group].includes('ALL') && activeFilters[group].includes(option); 
                 input.onchange = () => handleFilterChange(group, option);
                 optionLabel.appendChild(input);
@@ -515,6 +873,45 @@
         renderGrid(document.getElementById('searchInput').value);
     }
     
+    function handleScroll() {
+        let shouldShowButton = false;
+        const isMobile = window.innerWidth <= 768;
+
+        if (isMobile) {
+            const rect = sidebar.getBoundingClientRect();
+            shouldShowButton = rect.bottom < 0; 
+        } else {
+            const scrollPosition = mainContent.scrollTop; 
+            shouldShowButton = scrollPosition > 200;
+        }
+
+        if (shouldShowButton) { 
+            goTopButton.style.opacity = '1';
+            goTopButton.style.visibility = 'visible';
+            goTopButton.classList.add('visible'); 
+        } else {
+            goTopButton.style.opacity = '0';
+            goTopButton.style.visibility = 'hidden';
+            goTopButton.classList.remove('visible'); 
+        }
+    }
+
+    function scrollToTop() {
+        const isMobile = window.innerWidth <= 768;
+        if (isMobile) {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth' 
+            });
+        } else {
+            mainContent.scrollTo({
+                top: 0,
+                behavior: 'smooth' 
+            });
+        }
+    }
+
+
     function init() {
         const saved = localStorage.getItem(STORAGE_KEY);
         if (saved) selectedItems = new Set(JSON.parse(saved));
@@ -525,6 +922,12 @@
         document.getElementById('searchInput').addEventListener('input', (e) => {
             renderGrid(e.target.value);
         });
+        
+        mainContent.addEventListener('scroll', handleScroll);
+        window.addEventListener('scroll', handleScroll); 
+        window.addEventListener('resize', handleScroll);
+        
+        handleScroll(); 
 
         renderGrid();
         updateWishlist();
@@ -541,31 +944,28 @@
         }
         
         const itemsToRender = lootItems.filter(item => {
-            // 1. 검색어 필터
             const matchesSearch = item.name.toLowerCase().includes(lowerCaseFilter);
-
-            // 2. 티어 필터
             const tierFilter = activeFilters['Tier'];
             const matchesTier = tierFilter.includes('ALL') || tierFilter.includes(item.tier);
             
-            // Type 필터 로직 제거됨
-
             return matchesSearch && matchesTier;
         });
 
         itemsToRender.sort((a,b) => b.price - a.price).forEach(item => {
-            const isChecked = selectedItems.has(item.id);
+            const isChecked = selectedItems.has(String(item.id));
             const card = document.createElement('div');
             const tierClass = item.tier ? item.tier : ''; 
 
             card.className = `card ${tierClass} ${isChecked ? 'checked' : ''}`;
             const safeName = item.name.replace(/[\\/:*?"<>|]/g, '');
 
+            card.dataset.itemId = item.id;
+
             card.onclick = () => toggleItem(item.id, card);
             card.innerHTML = `
                 <div class="img-box"><img src="${IMAGE_FOLDER}/${safeName}.webp" onerror="this.src='https://via.placeholder.com/160';"></div>
                 <div class="name">${item.name}</div>
-                <div class="price">${item.price.toLocaleString()} UNIT</div>
+                <div class="price">${item.price.toLocaleString()} Coin</div>
                 <div class="tier-line"></div>
             `;
             mainGrid.appendChild(card);
@@ -573,11 +973,22 @@
     }
 
     function toggleItem(id, cardEl) {
-        if (selectedItems.has(id)) {
-            selectedItems.delete(id);
-            if (cardEl) cardEl.classList.remove('checked');
+        const itemId = String(id); 
+
+        if (selectedItems.has(itemId)) {
+            selectedItems.delete(itemId);
+            if (cardEl) {
+                cardEl.classList.remove('checked');
+            } else {
+                const gridCards = document.querySelectorAll('#mainGrid .card');
+                gridCards.forEach(card => {
+                    if (card.dataset.itemId === itemId) { 
+                        card.classList.remove('checked');
+                    }
+                });
+            }
         } else {
-            selectedItems.add(id);
+            selectedItems.add(itemId);
             if (cardEl) cardEl.classList.add('checked');
         }
         updateWishlist();
@@ -586,12 +997,44 @@
 
     function updateWishlist() {
         const wishlistEl = document.getElementById('wishlist');
-        const totalValueEl = document.getElementById('total-value');
-        wishlistEl.innerHTML = '';
-        let total = 0;
         
-        lootItems.filter(item => selectedItems.has(item.id)).forEach(item => {
+        // 총 금액 및 개수 계산
+        const selectedList = lootItems.filter(item => selectedItems.has(String(item.id)));
+        const itemCount = selectedList.length; 
+        let total = 0;
+        selectedList.forEach(item => {
             total += item.price;
+        });
+        
+        const totalString = total.toLocaleString() + ' Coin';
+        const formattedTotal = formatCoin(total); // 💡 간결하게 포맷된 금액
+        
+        // 1. 총 금액 업데이트
+        if (totalValueMain) totalValueMain.innerText = totalString;
+        if (totalValueSidebar) totalValueSidebar.innerText = totalString;
+
+        // 2. 💡 아이템 개수 및 금액 뱃지 업데이트
+        const badgeContent = `${itemCount} / ${formattedTotal}`;
+        
+        if (itemCountBadgeDesktop) {
+            itemCountBadgeDesktop.innerText = badgeContent;
+            itemCountBadgeDesktop.style.display = itemCount > 0 ? 'block' : 'none';
+        }
+        if (itemCountBadgeMobile) {
+            itemCountBadgeMobile.innerText = badgeContent;
+            itemCountBadgeMobile.style.display = itemCount > 0 ? 'block' : 'none';
+        }
+        
+        // 3. 위시리스트 목록 업데이트
+        wishlistEl.innerHTML = '';
+        
+        if (itemCount === 0 && window.innerWidth <= 768) {
+            wishlistEl.style.marginBottom = '0';
+        } else {
+            wishlistEl.style.marginBottom = '20px';
+        }
+
+        selectedList.forEach(item => {
             const safeName = item.name.replace(/[\\/:*?"<>|]/g, '');
             const div = document.createElement('div');
             div.className = `wishlist-item`;
@@ -599,12 +1042,11 @@
                 <img src="${IMAGE_FOLDER}/${safeName}.webp" class="wish-icon" onerror="this.src='https://via.placeholder.com/45';">
                 <div style="flex-grow: 1;">
                     <div style="font-weight:bold; font-size:0.85rem;">${item.name}</div>
-                    <div style="color:var(--point-blue); font-size:0.8rem; font-weight:bold;">${item.price.toLocaleString()}</div>
+                    <div style="color:var(--point-blue); font-size:0.8rem; font-weight:bold;">${item.price.toLocaleString()} Coin</div>
                 </div>
             `;
             wishlistEl.appendChild(div);
         });
-        totalValueEl.innerText = total.toLocaleString();
 
         if (document.getElementById('big-wishlist-modal').style.display === 'flex') {
             updateModalContent();
@@ -616,7 +1058,6 @@
             selectedItems.clear();
             localStorage.removeItem(STORAGE_KEY);
             
-            // 💡 필터 설정 초기화 (Tier만 ALL로)
             activeFilters['Tier'] = ['ALL'];
             localStorage.setItem(FILTER_STORAGE_KEY, JSON.stringify(activeFilters));
 
@@ -627,14 +1068,13 @@
         }
     }
     
-    // 💡 모달 관련 함수
     function updateModalContent() {
         const modalContentEl = document.getElementById('modal-wishlist-content');
-        const modalTotalValueEl = document.getElementById('modal-total-value');
+        const modalTotalValueEl = document.getElementById('modal-total-value-display'); 
         modalContentEl.innerHTML = '';
         let total = 0;
 
-        const selectedList = lootItems.filter(item => selectedItems.has(item.id));
+        const selectedList = lootItems.filter(item => selectedItems.has(String(item.id)));
         
         if (selectedList.length === 0) {
             modalContentEl.innerHTML = '<p style="text-align: center; color: var(--point-pink); font-size: 1.2rem;">선택된 아이템이 없습니다.</p>';
@@ -648,13 +1088,13 @@
                 div.innerHTML = `
                     <img src="${IMAGE_FOLDER}/${safeName}.webp" class="modal-item-icon" onerror="this.src='https://via.placeholder.com/70';">
                     <div class="modal-item-name">${item.name}</div>
-                    <div class="modal-item-price">${item.price.toLocaleString()} UNIT</div>
+                    <div class="modal-item-price">${item.price.toLocaleString()} Coin</div>
                 `;
                 modalContentEl.appendChild(div);
             });
         }
 
-        modalTotalValueEl.innerText = total.toLocaleString();
+        modalTotalValueEl.innerText = total.toLocaleString() + ' Coin'; 
     }
 
     function openModal() {
@@ -675,15 +1115,18 @@
                 }
             });
         }
+        init();
     });
 
-    init();
 </script>
 
 <div id="big-wishlist-modal" class="modal-overlay">
     <div class="modal-content">
         <span class="modal-close" onclick="closeModal()">&times;</span>
-        <div class="modal-header">TARGET ACQUISITION LIST (<span id="modal-total-value">0</span> UNITS)</div>
+        <div class="modal-header">
+            <div class="modal-header-title">TARGET ACQUISITION LIST</div>
+            <span id="modal-total-value-display">0 Coin</span>
+        </div>
         <div id="modal-wishlist-content">
             </div>
     </div>

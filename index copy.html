@@ -2,7 +2,6 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
     <title>ARC RAIDERS | Ivory Unified Database</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;700&display=swap');
@@ -17,12 +16,12 @@
             --point-pink: #d33f6a;
             
             /* S/A 티어 색상 교환 적용됨 */
-            --tier-s: #f1c40f; 
-            --tier-a: #d33f6a; 
+            --tier-s: #f1c40f; /* S티어: 노란색 */
+            --tier-a: #d33f6a; /* A티어: 핑크색 */
             
             --tier-b: #3498db;
             --tier-c: #27ae60;
-            --tier-d: #8c8c8c;
+            --tier-d: #8c8c8c; /* D 티어 색상 임시 추가 */
             
             /* 고정 버튼을 위한 패딩 변수 */
             --reset-padding: 20px; 
@@ -35,10 +34,10 @@
             margin: 0;
             display: flex;
             height: 100vh;
-            overflow-x: hidden; /* 가로 스크롤 방지 */
+            overflow: hidden;
         }
 
-        /* 💡 데스크톱 기본 레이아웃 (Sidebar + Main) */
+        /* --- Sidebar 영역 --- */
         #sidebar {
             width: 340px;
             background: var(--sidebar-ivory);
@@ -47,7 +46,6 @@
             flex-direction: column;
             box-shadow: 4px 0 15px rgba(0,0,0,0.05);
             z-index: 1000;
-            flex-shrink: 0;
         }
 
         .logo-container {
@@ -72,6 +70,7 @@
             overflow-y: auto;
         }
 
+        /* --- 고정된 버튼 영역 스타일 --- */
         #reset-container {
             flex-shrink: 0;
             padding: var(--reset-padding);
@@ -94,6 +93,7 @@
             font-weight: bold;
         }
 
+        /* --- 나머지 스타일 유지 --- */
         .section-header {
             font-family: 'Orbitron', sans-serif;
             font-size: 0.85rem;
@@ -149,7 +149,7 @@
             font-weight: bold;
         }
 
-        /* --- Main Content 영역 --- */
+        /* --- Main Content 영역 (스크롤 설정) --- */
         .main-content { 
             flex-grow: 1; 
             overflow-y: auto; 
@@ -173,9 +173,10 @@
             font-family: 'Rajdhani', sans-serif; 
             font-size: 1rem; 
             background: #fff;
-            margin-bottom: 15px;
+            margin-bottom: 15px; /* 필터 영역과의 간격 */
         }
-
+        
+        /* 💡 필터 컨테이너 스타일 */
         #filter-container {
             background: #ffffff;
             border-radius: 12px;
@@ -189,6 +190,7 @@
             flex-wrap: wrap;
             align-items: center;
             gap: 10px 20px;
+            /* Type 필터가 제거되어 border-bottom 제거 */
         }
 
         .filter-label {
@@ -214,13 +216,13 @@
             height: 14px;
         }
 
+        /* --- 카드 스타일 --- */
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
             gap: 30px;
         }
 
-        /* --- 카드 스타일 (변경 없음) --- */
         .card {
             background: var(--card-white);
             border-radius: 15px;
@@ -285,7 +287,7 @@
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-thumb { background: var(--border-tan); border-radius: 3px; }
         
-        /* --- 모달 스타일 (변경 없음) --- */
+        /* --- 모달 스타일 --- */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -332,6 +334,7 @@
             line-height: 1;
         }
 
+        /* 모달 내부 리스트 스타일 */
         #modal-wishlist-content {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -347,6 +350,7 @@
             transition: transform 0.2s;
         }
         
+        /* 티어 라인 재사용 */
         .modal-item-card.S { border-bottom: 5px solid var(--tier-s); }
         .modal-item-card.A { border-bottom: 5px solid var(--tier-a); }
         .modal-item-card.B { border-bottom: 5px solid var(--tier-b); }
@@ -376,93 +380,6 @@
             color: var(--point-blue);
             font-weight: bold;
             font-size: 1.2rem;
-        }
-        
-        /* ==================================== */
-        /* 💡 2. 모바일 미디어 쿼리 (화면 너비 768px 이하) */
-        /* ==================================== */
-        @media (max-width: 768px) {
-            body {
-                flex-direction: column; /* 사이드바와 메인 콘텐츠를 수직으로 쌓음 */
-                height: auto; /* 높이 고정 해제 */
-                overflow-y: auto; /* 전체 페이지 스크롤 가능 */
-            }
-
-            /* --- 사이드바 (Sidebar) --- */
-            #sidebar {
-                width: 100%; /* 너비를 화면 전체로 확장 */
-                height: auto; /* 높이 자동 */
-                border-right: none;
-                border-bottom: 1px solid var(--border-tan); /* 하단에 구분선 추가 */
-                position: relative; /* 고정 해제 */
-                box-shadow: 0 4px 15px rgba(0,0,0,0.05); /* 하단에 그림자 */
-            }
-            
-            /* 로고는 그대로 유지 */
-
-            /* 사이드바 콘텐츠 영역: 모바일에서는 스크롤 없애고 전체 보임 */
-            .scrollable-content {
-                overflow-y: visible; 
-                padding-bottom: var(--reset-padding); /* 버튼과의 간격 확보 */
-            }
-
-            /* 고정 버튼 컨테이너: 사이드바 내부에서 콘텐츠 아래로 이동 */
-            #reset-container {
-                position: sticky; /* 하단에 고정 */
-                bottom: 0;
-                border-top: 1px solid var(--border-tan);
-                padding-top: 20px;
-                padding-bottom: 20px;
-                width: 100%; /* 100%로 확장 */
-                box-shadow: 0 -4px 10px rgba(0,0,0,0.1); 
-            }
-            
-            /* --- 메인 콘텐츠 (Main Content) --- */
-            .main-content {
-                padding: 20px; /* 모바일에서는 좌우 패딩을 줄임 */
-                overflow-y: visible; /* 전체 페이지 스크롤 사용 */
-            }
-
-            /* 검색 영역: 패딩 조정 */
-            #search-container {
-                padding: 0 0 20px 0; /* 상단 패딩 제거 */
-                position: static; /* sticky 해제 (메인 콘텐츠가 스크롤되므로) */
-            }
-            
-            /* 그리드: 2열 레이아웃으로 변경 (카드 크기 조정) */
-            .grid {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); 
-                gap: 15px; /* 간격 줄임 */
-            }
-
-            /* 카드 크기 조정 */
-            .card {
-                padding: 15px 10px;
-                border-radius: 10px;
-            }
-
-            .img-box {
-                width: 60px;
-                height: 60px;
-                margin: 20px auto 10px;
-            }
-
-            .name {
-                font-size: 0.9rem;
-                height: auto; /* 높이 제한 해제 */
-            }
-            .price {
-                font-size: 1.1rem;
-            }
-            
-            /* 필터 그룹: 세로로 보기 좋게 조정 */
-            .filter-group {
-                gap: 10px;
-            }
-            
-            .filter-label {
-                min-width: 40px;
-            }
         }
     </style>
 </head>
@@ -504,6 +421,7 @@
     const STORAGE_KEY = "arc_Unified_Ivory_Final";
     const FILTER_STORAGE_KEY = "arc_Unified_Ivory_Filters";
 
+    // 💡 Type 항목 제거, Tier 필터만 유지
     const FILTER_OPTIONS = {
         'Tier': ['S', 'A', 'B', 'C', 'D'], 
     };
@@ -516,6 +434,7 @@
         if (savedFilters) {
             activeFilters = JSON.parse(savedFilters);
         } else {
+            // Tier만 기본값 설정 (ALL)
             activeFilters['Tier'] = ['ALL'];
         }
     }
@@ -537,6 +456,7 @@
             label.innerText = group.toUpperCase();
             groupDiv.appendChild(label);
 
+            // 'ALL' 항목 추가
             const allOption = document.createElement('label');
             allOption.className = 'filter-option';
             const allInput = document.createElement('input');
@@ -548,12 +468,14 @@
             allOption.appendChild(document.createTextNode('ALL'));
             groupDiv.appendChild(allOption);
 
+            // 개별 필터 항목 추가
             FILTER_OPTIONS[group].forEach(option => {
                 const optionLabel = document.createElement('label');
                 optionLabel.className = 'filter-option';
                 const input = document.createElement('input');
                 input.type = 'checkbox';
                 input.value = option;
+                // ALL이 선택되지 않은 경우에만 개별 항목의 상태를 반영
                 input.checked = !activeFilters[group].includes('ALL') && activeFilters[group].includes(option); 
                 input.onchange = () => handleFilterChange(group, option);
                 optionLabel.appendChild(input);
@@ -619,10 +541,15 @@
         }
         
         const itemsToRender = lootItems.filter(item => {
+            // 1. 검색어 필터
             const matchesSearch = item.name.toLowerCase().includes(lowerCaseFilter);
+
+            // 2. 티어 필터
             const tierFilter = activeFilters['Tier'];
             const matchesTier = tierFilter.includes('ALL') || tierFilter.includes(item.tier);
             
+            // Type 필터 로직 제거됨
+
             return matchesSearch && matchesTier;
         });
 
@@ -655,8 +582,6 @@
         }
         updateWishlist();
         localStorage.setItem(STORAGE_KEY, JSON.stringify([...selectedItems]));
-        // 모바일 환경에서 체크 시, 메인 그리드를 다시 렌더링하여 체크 표시가 확실히 보이도록 할 수 있습니다. (선택 사항)
-        // renderGrid(document.getElementById('searchInput').value);
     }
 
     function updateWishlist() {
@@ -691,6 +616,7 @@
             selectedItems.clear();
             localStorage.removeItem(STORAGE_KEY);
             
+            // 💡 필터 설정 초기화 (Tier만 ALL로)
             activeFilters['Tier'] = ['ALL'];
             localStorage.setItem(FILTER_STORAGE_KEY, JSON.stringify(activeFilters));
 
@@ -701,6 +627,7 @@
         }
     }
     
+    // 💡 모달 관련 함수
     function updateModalContent() {
         const modalContentEl = document.getElementById('modal-wishlist-content');
         const modalTotalValueEl = document.getElementById('modal-total-value');
