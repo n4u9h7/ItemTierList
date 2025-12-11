@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-    <title>ARC RAIDERS | Ivory Unified Database</title>
+    <title>ARC RAIDERS | Item Value Database</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght+500;700&display=swap');
 
@@ -641,7 +641,7 @@
 
 <div id="fixed-header-container">
     <div class="net-worth-box">
-        <div class="net-worth-label">TOTAL NET WORTH</div>
+        <div class="net-worth-label">TOTAL COIN</div>
         <div class="total-value" id="total-value-display">0 Coin</div>
     </div>
 
@@ -660,16 +660,16 @@
     </div>
     
     <div class="scrollable-content">
-        <div class="section-header" id="sidebar-section-header">PHARMING TARGETS</div>
+        <div class="section-header" id="sidebar-section-header">TARGET ITEMS</div>
         <div id="wishlist"></div>
     </div>
 
     <div id="reset-container-desktop"> 
         <button class="btn-show-modal" onclick="openModal()">
-            VIEW SELECTED ITEMS
+            VIEW
             <span id="item-count-badge-desktop" class="item-count-badge">0 / 0</span>
         </button>
-        <button class="btn-reset" onclick="clearStorage()">RESET SYSTEM</button>
+        <button class="btn-reset" onclick="clearStorage()">RESET</button>
     </div>
 </aside>
 
@@ -685,10 +685,10 @@
 
 <div id="reset-container-mobile">
     <button class="btn-show-modal" onclick="openModal()">
-        VIEW SELECTED ITEMS
+        VIEW
         <span id="item-count-badge-mobile" class="item-count-badge">0 / 0</span>
     </button>
-    <button class="btn-reset" onclick="clearStorage()">RESET SYSTEM</button>
+    <button class="btn-reset" onclick="clearStorage()">RESET</button>
 </div>
 
 <script src="data.js"></script>
@@ -698,14 +698,6 @@
     const STORAGE_KEY = "arc_Unified_Ivory_Final";
     const FILTER_STORAGE_KEY = "arc_Unified_Ivory_Filters";
     
-    // 💡 추가: 한국어 사용 여부 감지
-    const isKorean = navigator.language.startsWith('ko');
-    
-    // 💡 추가: 아이템 이름 반환 헬퍼 함수
-    function getItemName(item) {
-        return (isKorean && item.kr_name) ? item.kr_name : item.name;
-    }
-
     const goTopButton = document.getElementById('go-top-button');
     const totalValueDisplay = document.getElementById('total-value-display');
     const itemCountBadgeDesktop = document.getElementById('item-count-badge-desktop');
@@ -863,12 +855,9 @@
         }
         
         const itemsToRender = lootItems.filter(item => {
-            // 💡 수정: 한국어/영어 이름 모두 검색 대상에 포함
-            const itemName = item.name.toLowerCase();
-            const itemKrName = item.kr_name ? item.kr_name.toLowerCase() : '';
-            
-            const matchesSearch = itemName.includes(lowerCaseFilter) || itemKrName.includes(lowerCaseFilter);
-            
+            // Check against both English name (name) and Korean name (kr_name)
+            const matchesSearch = item.name.toLowerCase().includes(lowerCaseFilter) || 
+                                  (item.kr_name && item.kr_name.toLowerCase().includes(lowerCaseFilter));
             const tierFilter = activeFilters['Tier'];
             const matchesTier = tierFilter.includes('ALL') || tierFilter.includes(item.tier);
             
@@ -881,6 +870,7 @@
             const tierClass = item.tier ? item.tier : ''; 
 
             card.className = `card ${tierClass} ${isChecked ? 'checked' : ''}`;
+            // Use item.name for image file path (assuming image files are named after the English/original name)
             const safeName = item.name.replace(/[\\/:*?"<>|]/g, '');
 
             card.dataset.itemId = item.id;
@@ -888,7 +878,8 @@
             card.onclick = () => toggleItem(item.id, card);
             card.innerHTML = `
                 <div class="img-box"><img src="${IMAGE_FOLDER}/${safeName}.webp" onerror="this.src='https://via.placeholder.com/160';"></div>
-                <div class="name">${getItemName(item)}</div> <div class="price">${item.price.toLocaleString()} Coin</div>
+                <div class="name">${item.kr_name || item.name}</div>
+                <div class="price">${item.price.toLocaleString()} Coin</div>
                 <div class="tier-line"></div>
             `;
             mainGrid.appendChild(card);
@@ -960,7 +951,8 @@
             div.innerHTML = `
                 <img src="${IMAGE_FOLDER}/${safeName}.webp" class="wish-icon" onerror="this.src='https://via.placeholder.com/45';">
                 <div style="flex-grow: 1;">
-                    <div style="font-weight:bold; font-size:0.85rem;">${getItemName(item)}</div> <div style="color:var(--point-blue); font-size:0.8rem; font-weight:bold;">${item.price.toLocaleString()} Coin</div>
+                    <div style="font-weight:bold; font-size:0.85rem;">${item.kr_name || item.name}</div>
+                    <div style="color:var(--point-blue); font-size:0.8rem; font-weight:bold;">${item.price.toLocaleString()} Coin</div>
                 </div>
             `;
             wishlistEl.appendChild(div);
@@ -1003,7 +995,8 @@
                 div.className = `modal-item-card ${tierClass}`;
                 div.innerHTML = `
                     <img src="${IMAGE_FOLDER}/${safeName}.webp" class="modal-item-icon" onerror="this.src='https://via.placeholder.com/70';">
-                    <div class="modal-item-name">${getItemName(item)}</div> <div class="modal-item-price">${item.price.toLocaleString()} Coin</div>
+                    <div class="modal-item-name">${item.kr_name || item.name}</div>
+                    <div class="modal-item-price">${item.price.toLocaleString()} Coin</div>
                 `;
                 modalContentEl.appendChild(div);
             });
@@ -1039,7 +1032,7 @@
     <div class="modal-content">
         <span class="modal-close" onclick="closeModal()">&times;</span>
         <div class="modal-header">
-            <div class="modal-header-title">TARGET ACQUISITION LIST</div>
+            <div class="modal-header-title">TARGET ITEM LIST</div>
             <span id="modal-total-value-display">0 Coin</span>
         </div>
         <div id="modal-wishlist-content">
