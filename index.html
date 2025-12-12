@@ -627,6 +627,11 @@
             }
             .filter-group { gap: 5px 10px; justify-content: center; }
 
+            /* 💡 수정된 부분: 필터 라벨의 최소 너비를 줄여 공간 확보 */
+            .filter-label { 
+                min-width: 35px; /* 50px -> 35px로 줄임 */
+            }
+            
             /* 2. 사이드바 (위시리스트) */
             #sidebar {
                 position: relative; 
@@ -895,7 +900,7 @@
                 efficiencyButton.title = '코인 효율표 보기 (Stack x Price)';
                 efficiencyButton.style.cssText = `
                     background: none; border: none; color: var(--point-pink); 
-                    font-size: 1.1rem; cursor: pointer; margin-left: 5px; 
+                    font-size: 1.1rem; cursor: pointer; margin-left: 2px; /* 💡 5px -> 2px로 수정 */
                     line-height: 1; padding: 0; font-family: 'Orbitron', sans-serif;
                 `;
                 labelWrapper.appendChild(efficiencyButton);
