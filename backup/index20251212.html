@@ -399,34 +399,7 @@
             object-fit: contain;
         }
 
-        .name { 
-            font-size: 1.1rem; 
-            font-weight: bold; 
-            margin-bottom: 8px; 
-            height: 45px; 
-            overflow: hidden; 
-            /* 내부 콘텐츠 중앙 정렬을 위한 설정 */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            line-height: 1.2; /* 줄 높이 조정 */
-        }
-        
-        /* [수정] 스택 카운트 배지 스타일 */
-        .stack-badge {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.65rem; /* 작은 크기 */
-            color: #fff;
-            background: #908a7c; /* 차분한 배경색 */
-            padding: 1px 5px;
-            border-radius: 6px;
-            font-weight: normal;
-            margin-top: 3px; /* 이름과 약간 분리 */
-            display: inline-block;
-        }
-
-
+        .name { font-size: 1.1rem; font-weight: bold; margin-bottom: 8px; height: 45px; overflow: hidden; }
         .price { font-size: 1.4rem; font-weight: bold; color: var(--point-blue); opacity: 1; }
 
         .tier-line { height: 6px; border-radius: 3px; margin-top: 20px; }
@@ -478,7 +451,7 @@
         }
         
         .modal-header-title { font-size: 1.5rem; white-space: nowrap; }
-        #modal-total-value-display, #modal-efficiency-info {
+        #modal-total-value-display {
             font-family: 'Orbitron', sans-serif;
             font-size: 1.8rem; 
             color: var(--point-blue); 
@@ -486,11 +459,6 @@
             letter-spacing: 1px;
             text-align: right;
             line-height: 1;
-        }
-        #modal-efficiency-info {
-            font-size: 1rem;
-            color: #8c8c8c;
-            font-weight: normal;
         }
 
         .modal-close {
@@ -523,87 +491,8 @@
         .modal-item-card.D { border-bottom: 5px solid var(--tier-d); }
 
         .modal-item-icon { width: 70px; height: 70px; margin: 0 auto 10px; object-fit: contain; background: #f9f9f9; border-radius: 8px; }
-        .modal-item-name { 
-            font-weight: bold; 
-            font-size: 1rem; 
-            margin-bottom: 5px; 
-            min-height: 40px; 
-            overflow: hidden; 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
+        .modal-item-name { font-weight: bold; font-size: 1rem; margin-bottom: 5px; min-height: 40px; overflow: hidden; }
         .modal-item-price { font-family: 'Orbitron', sans-serif; color: var(--point-blue); font-weight: bold; font-size: 1.2rem; }
-        
-        /* [새로운 스타일] 효율표 모달 전용 스타일 */
-        .modal-efficiency-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 15px;
-            padding-top: 5px;
-        }
-
-        .efficiency-item-card {
-            background: #ffffff;
-            border-radius: 10px;
-            padding: 10px 15px;
-            text-align: left;
-            border: 1px solid var(--border-tan);
-            display: flex;
-            align-items: center;
-            transition: border 0.2s;
-            gap: 10px; /* 아이콘과 텍스트 간격 */
-        }
-        
-        .efficiency-item-card.S { border-left: 5px solid var(--tier-s); }
-        .efficiency-item-card.A { border-left: 5px solid var(--tier-a); }
-        .efficiency-item-card.B { border-left: 5px solid var(--tier-b); }
-        .efficiency-item-card.C { border-left: 5px solid var(--tier-c); }
-        .efficiency-item-card.D { border-left: 5px solid var(--tier-d); }
-
-        .efficiency-icon {
-            width: 40px;
-            height: 40px;
-            object-fit: contain;
-            background: #f9f9f9;
-            border-radius: 6px;
-            flex-shrink: 0;
-        }
-
-        /* [수정] 랭크 번호와 텍스트 간격 확보를 위한 스타일 */
-        .efficiency-rank {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.3rem; /* 100위 이상 겹침 방지를 위해 약간 줄임 */
-            color: var(--point-pink);
-            font-weight: bold;
-            margin-right: 5px;
-            width: 40px; /* 너비 고정 */
-            text-align: center;
-            flex-shrink: 0;
-            line-height: 1;
-        }
-
-        .efficiency-info {
-            flex-grow: 1;
-        }
-        .efficiency-name {
-            font-weight: bold; 
-            font-size: 1rem; 
-            white-space: nowrap; 
-            overflow: hidden; 
-            text-overflow: ellipsis;
-        }
-        .efficiency-value {
-            font-family: 'Orbitron', sans-serif;
-            color: var(--point-blue);
-            font-size: 1.1rem;
-            font-weight: bold;
-        }
-        .efficiency-detail {
-            font-size: 0.75rem;
-            color: #8c8c8c;
-        }
         
         /* ---------------------------------- */
         /* 💡 모바일 미디어 쿼리 (768px 이하) */
@@ -703,17 +592,7 @@
             .card { padding: 10px 5px; }
             .card::before { font-size: 0.5rem; padding: 1px 8px; top: 8px; } 
             .img-box { width: 50px; height: 50px; margin: 15px auto 5px; } 
-            .name { 
-                font-size: 0.75rem; 
-                min-height: 35px; 
-                margin-bottom: 3px; 
-            } 
-            /* [모바일 최적화] 스택 카운트 배지 스타일 */
-            .stack-badge {
-                font-size: 0.55rem;
-                padding: 1px 4px;
-                margin-top: 2px;
-            }
+            .name { font-size: 0.75rem; height: 35px; margin-bottom: 3px; } 
             .price { font-size: 0.85rem; } 
             .tier-line { margin-top: 10px; height: 4px; }
 
@@ -753,24 +632,8 @@
             }
             .modal-item-card { padding: 8px 4px; }
             .modal-item-icon { width: 45px; height: 45px; margin-bottom: 5px; }
-            .modal-item-name { 
-                font-size: 0.7rem; 
-                min-height: 30px; 
-                margin-bottom: 2px;
-            }
+            .modal-item-name { font-size: 0.7rem; min-height: 30px; margin-bottom: 2px; }
             .modal-item-price { font-size: 0.8rem; }
-            
-            /* [새로운 스타일] 효율표 모바일 최적화 */
-            .modal-efficiency-grid {
-                grid-template-columns: 1fr;
-                gap: 8px;
-            }
-            .efficiency-rank { font-size: 1.1rem; width: 25px; } /* 모바일에서 더 줄임 */
-            .efficiency-name { font-size: 0.9rem; }
-            .efficiency-value { font-size: 1rem; }
-            .efficiency-detail { font-size: 0.7rem; }
-            .efficiency-item-card { padding: 8px 10px; }
-            .efficiency-icon { width: 35px; height: 35px; }
         }
     </style>
 </head>
@@ -878,35 +741,10 @@
             const groupDiv = document.createElement('div');
             groupDiv.className = 'filter-group';
 
-            // Tier 그룹에 효율표 버튼 추가
-            if (group === 'Tier') {
-                const labelWrapper = document.createElement('div');
-                labelWrapper.style.display = 'flex';
-                labelWrapper.style.alignItems = 'center';
-
-                const label = document.createElement('div');
-                label.className = 'filter-label';
-                label.innerText = group.toUpperCase();
-                labelWrapper.appendChild(label);
-
-                const efficiencyButton = document.createElement('button');
-                efficiencyButton.innerHTML = '&#9888;'; // 느낌표 모양
-                efficiencyButton.onclick = openEfficiencyModal; // 새 함수 연결
-                efficiencyButton.title = '코인 효율표 보기 (Stack x Price)';
-                efficiencyButton.style.cssText = `
-                    background: none; border: none; color: var(--point-pink); 
-                    font-size: 1.1rem; cursor: pointer; margin-left: 5px; 
-                    line-height: 1; padding: 0; font-family: 'Orbitron', sans-serif;
-                `;
-                labelWrapper.appendChild(efficiencyButton);
-                groupDiv.appendChild(labelWrapper); // Wrapper를 추가
-            } else {
-                const label = document.createElement('div');
-                label.className = 'filter-label';
-                label.innerText = group.toUpperCase();
-                groupDiv.appendChild(label);
-            }
-            // [수정된 부분 끝]
+            const label = document.createElement('div');
+            label.className = 'filter-label';
+            label.innerText = group.toUpperCase();
+            groupDiv.appendChild(label);
 
             const allOption = document.createElement('label');
             allOption.className = 'filter-option';
@@ -1038,19 +876,9 @@
             card.dataset.itemId = item.id;
 
             card.onclick = () => toggleItem(item.id, card);
-            
-            // 💡 [수정된 부분] Stack Count Badge 추가
-            const stackCount = item.stack || 1; // stack이 없을 경우 기본값 1
-            const stackBadge = stackCount > 1 
-                ? `<span class="stack-badge">x${stackCount.toLocaleString()}</span>`
-                : '';
-                
             card.innerHTML = `
                 <div class="img-box"><img src="${IMAGE_FOLDER}/${safeName}.webp" onerror="this.src='https://via.placeholder.com/160';"></div>
-                <div class="name">
-                    ${item.kr_name || item.name}
-                    ${stackBadge}
-                </div>
+                <div class="name">${item.kr_name || item.name}</div>
                 <div class="price">${item.price.toLocaleString()} Coin</div>
                 <div class="tier-line"></div>
             `;
@@ -1145,7 +973,6 @@
             renderGrid();
             updateWishlist();
             closeModal();
-            closeEfficiencyModal(); // 효율표 모달도 닫기
         }
     }
     
@@ -1165,20 +992,10 @@
                 const safeName = item.name.replace(/[\\/:*?"<>|]/g, '');
                 const div = document.createElement('div');
                 const tierClass = item.tier ? item.tier : '';
-                
-                // [수정] Stack Count Badge 추가
-                const stackCount = item.stack || 1;
-                const stackBadge = stackCount > 1 
-                    ? `<span class="stack-badge" style="font-size: 0.5rem; margin-top: 2px;">x${stackCount.toLocaleString()}</span>`
-                    : '';
-                    
                 div.className = `modal-item-card ${tierClass}`;
                 div.innerHTML = `
                     <img src="${IMAGE_FOLDER}/${safeName}.webp" class="modal-item-icon" onerror="this.src='https://via.placeholder.com/70';">
-                    <div class="modal-item-name">
-                        ${item.kr_name || item.name}
-                        ${stackBadge}
-                    </div>
+                    <div class="modal-item-name">${item.kr_name || item.name}</div>
                     <div class="modal-item-price">${item.price.toLocaleString()} Coin</div>
                 `;
                 modalContentEl.appendChild(div);
@@ -1197,63 +1014,6 @@
         document.getElementById('big-wishlist-modal').style.display = 'none';
     }
 
-    // 코인 효율표 계산 및 렌더링
-    function calculateAndRenderEfficiency() {
-        const modalContentEl = document.getElementById('modal-efficiency-content');
-        modalContentEl.innerHTML = '';
-
-        if (typeof lootItems === 'undefined') {
-            modalContentEl.innerHTML = '<p style="text-align: center;">Error: Item data not loaded.</p>';
-            return;
-        }
-
-        // 1. 효율성 계산 (stack * price)
-        const efficiencyList = lootItems.map(item => {
-            // stack 필드가 없을 경우를 대비하여 기본값 1을 사용합니다.
-            const stack = item.stack || 1; 
-            const efficiency = item.price * stack;
-            return {
-                ...item,
-                efficiency: efficiency,
-                stack: stack 
-            };
-        });
-
-        // 2. 효율성 순으로 정렬 (내림차순)
-        efficiencyList.sort((a, b) => b.efficiency - a.efficiency);
-        
-        // 3. 모달에 렌더링
-        efficiencyList.forEach((item, index) => {
-            const div = document.createElement('div');
-            const tierClass = item.tier ? item.tier : '';
-            const safeName = item.name.replace(/[\\/:*?"<>|]/g, ''); // 이미지 파일명 생성
-
-            div.className = `efficiency-item-card ${tierClass}`;
-            
-            div.innerHTML = `
-                <div class="efficiency-rank">${index + 1}</div>
-                <img src="${IMAGE_FOLDER}/${safeName}.webp" class="efficiency-icon" onerror="this.src='https://via.placeholder.com/40';">
-                <div class="efficiency-info">
-                    <div class="efficiency-name">${item.kr_name || item.name}</div>
-                    <div class="efficiency-value">${item.efficiency.toLocaleString()} Coin</div>
-                    <div class="efficiency-detail">Stack: ${item.stack.toLocaleString()} x Price: ${item.price.toLocaleString()}</div>
-                </div>
-            `;
-            modalContentEl.appendChild(div);
-        });
-    }
-
-    // 효율표 모달 열기
-    function openEfficiencyModal() {
-        calculateAndRenderEfficiency();
-        document.getElementById('efficiency-modal').style.display = 'flex';
-    }
-
-    // 효율표 모달 닫기
-    function closeEfficiencyModal() {
-        document.getElementById('efficiency-modal').style.display = 'none';
-    }
-
     document.addEventListener('DOMContentLoaded', () => {
         const modal = document.getElementById('big-wishlist-modal');
         if (modal) {
@@ -1263,17 +1023,6 @@
                 }
             });
         }
-        
-        // 효율표 모달 닫기 리스너 추가
-        const efficiencyModal = document.getElementById('efficiency-modal');
-        if (efficiencyModal) {
-            efficiencyModal.addEventListener('click', (e) => {
-                if (e.target === efficiencyModal) {
-                    closeEfficiencyModal();
-                }
-            });
-        }
-        
         init();
     });
 
@@ -1288,19 +1037,6 @@
         </div>
         <div id="modal-wishlist-content">
             </div>
-    </div>
-</div>
-
-<div id="efficiency-modal" class="modal-overlay">
-    <div class="modal-content">
-        <span class="modal-close" onclick="closeEfficiencyModal()">&times;</span>
-        <div class="modal-header">
-            <div class="modal-header-title">COIN EFFICIENCY CHART</div>
-            <span id="modal-efficiency-info">Stack × Price = Efficiency</span>
-        </div>
-        <div id="modal-efficiency-content" class="modal-efficiency-grid">
-            <div style="text-align:center; padding: 20px; font-size: 1.1rem; color: #8c8c8c;">아이템 데이터를 불러오는 중...</div>
-        </div>
     </div>
 </div>
 </body>
