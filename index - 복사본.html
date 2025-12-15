@@ -1,0 +1,1312 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>ARC RAIDERS | Item Value Database</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght+500;700&display=swap');
+
+        :root {
+            --bg-ivory: #f2ede4; 
+            --sidebar-ivory: #e6e0d4; 
+            --card-white: #f2ede42f;
+            --text-main: #3a352a;
+            --border-tan: #dcd3c1;
+            --point-blue: #45a29e;
+            --point-pink: #d33f6a;
+            
+            --tier-s: #f1c40f; 
+            --tier-a: #d33f6a; 
+            
+            --tier-b: #3498db;
+            --tier-c: #27ae60;
+            --tier-d: #8c8c8c;
+            
+            --padding-base: 20px; 
+            --fixed-height-mobile: 80px; 
+            --sidebar-width-desktop: 340px; 
+        }
+
+        html {
+            overflow-x: hidden; 
+            overflow-y: auto;
+        }
+        
+        body {
+            background-color: var(--bg-ivory);
+            color: var(--text-main);
+            font-family: 'Rajdhani', sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            overflow-x: hidden; 
+            overflow-y: auto; 
+        }
+
+        /* ---------------------------------- */
+        /* 데스크톱 기본 레이아웃 (769px 이상) */
+        /* ---------------------------------- */
+        #sidebar {
+            width: var(--sidebar-width-desktop);
+            background: var(--sidebar-ivory);
+            border-right: 1px solid var(--border-tan);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.05);
+            z-index: 1000;
+            flex-shrink: 0;
+            position: fixed; 
+            top: 0; 
+            left: 0;
+            height: 100vh; 
+        }
+        
+        .scrollable-content {
+            padding: var(--padding-base);
+            padding-bottom: 0;
+            flex-grow: 1;
+            overflow-y: visible;
+        }
+
+        .logo-container {
+            width: 100%;
+            height: 180px;
+            background: #ffffff;
+            border-bottom: 2px solid var(--border-tan);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .logo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        #mobile-header-fixed,
+        .logo-container-mobile {
+            display: none;
+        }
+
+        #reset-container-desktop {
+            flex-shrink: 0;
+            padding: var(--padding-base);
+            padding-top: 10px;
+            background: var(--sidebar-ivory);
+            border-top: 1px solid var(--border-tan);
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.03);
+            position: relative; 
+        }
+        
+        #reset-container-mobile {
+            display: none; 
+        }
+
+        .main-content { 
+            flex-grow: 1; 
+            overflow-y: visible;
+            margin-left: var(--sidebar-width-desktop); 
+            padding: 0 40px 40px 40px; 
+        }
+
+        /* 최상단 고정 헤더 컨테이너 */
+        #fixed-header-container {
+            position: fixed;
+            top: 0;
+            right: 0;
+            z-index: 9999; /* Z-index 높임 */
+            background: var(--bg-ivory);
+            border-bottom: 1px solid var(--border-tan);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            padding: 15px 40px;
+            box-sizing: border-box;
+            left: var(--sidebar-width-desktop);
+            height: 170px; /* 데스크톱 헤더 높이 */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* 금액 박스 */
+        .net-worth-box {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 10px 15px;
+            border: 1px solid var(--border-tan);
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .net-worth-label {
+            font-size: 0.75rem; 
+            opacity: 0.7;
+            font-family: 'Orbitron', sans-serif;
+        }
+        .total-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            text-align: right;
+            color: var(--point-blue);
+            font-weight: bold;
+        }
+
+        /* 검색 그룹 */
+        .search-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px; 
+            width: 100%;
+        }
+
+        #go-top-button {
+            background: var(--point-blue);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            line-height: 45px;
+            text-align: center;
+            cursor: pointer;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s, margin-right 0.3s, width 0.3s, min-width 0.3s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            width: 0; 
+            min-width: 0;
+            margin-right: 0;
+            padding: 0;
+            flex-shrink: 0;
+        }
+        
+        #go-top-button.visible {
+             width: 45px;
+             min-width: 45px;
+             margin-right: 10px;
+             opacity: 1;
+             visibility: visible;
+        }
+        
+        #go-top-button:hover {
+            background: #398884;
+        }
+
+        #searchInput {
+            flex-grow: 1; 
+            padding: 12px 20px; 
+            border-radius: 25px; 
+            border: 1px solid var(--border-tan); 
+            font-family: 'Rajdhani', sans-serif; 
+            font-size: 1rem; 
+            background: #fff;
+            box-sizing: border-box; 
+            height: 45px;
+        }
+
+        /* 필터 컨테이너 */
+        #filter-container {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 10px 15px;
+            border: 1px solid var(--border-tan);
+        }
+
+        .filter-group {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px 20px;
+        }
+
+        .filter-label {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            color: var(--point-pink);
+            min-width: 50px;
+            flex-shrink: 0;
+        }
+
+        .filter-option {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .filter-option input[type="checkbox"] {
+            margin-right: 5px;
+            accent-color: var(--point-blue);
+            width: 14px;
+            height: 14px;
+        }
+
+        /* 구분선 및 헤더 */
+        .section-header {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            color: var(--text-main);
+            background: #ffffff;
+            padding: 8px 15px;
+            border-radius: 20px;
+            text-align: center;
+            border: 1px solid var(--border-tan);
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+        
+        .mobile-separator {
+            width: 100%;
+            height: 1px;
+            background: var(--border-tan);
+            margin: 15px 0 25px 0;
+            display: none; 
+        }
+        
+        .acquisition-list-header {
+             display: none; 
+        }
+
+        /* 위시리스트 스타일 (데스크톱 기본) */
+        #wishlist { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px; 
+        }
+
+        .wishlist-item {
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 8px; 
+            display: flex;
+            align-items: center;
+            gap: 8px; 
+            border: 1px solid var(--border-tan);
+        }
+
+        .wish-icon { 
+            width: 35px; 
+            height: 35px; 
+            border-radius: 4px; 
+            object-fit: contain; 
+            background: #f9f9f9; 
+            flex-shrink: 0;
+        }
+
+        .wishlist-item > div { width: 100%; }
+        .wishlist-item > div > div:first-child { font-weight:bold; font-size: 0.8rem; }
+        .wishlist-item > div > div:last-child { color:var(--point-blue); font-weight:bold; font-size: 0.75rem; }
+
+        /* 버튼 공통 스타일 */
+        .btn-show-modal, .btn-reset { 
+            border: none;
+            padding: 12px;
+            width: 100%; 
+            font-family: 'Orbitron', sans-serif;
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+        .btn-show-modal {
+            background: var(--point-blue);
+            color: #fff;
+            margin-bottom: 10px; 
+            position: relative; 
+        }
+        .btn-reset {
+            background: var(--point-pink);
+            color: #fff;
+        }
+        
+        /* 배지 스타일 */
+        .item-count-badge {
+            position: absolute;
+            top: -10px; 
+            right: 10px; 
+            background: var(--point-pink);
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.65rem; 
+            font-weight: bold;
+            padding: 6px 10px; 
+            border-radius: 12px;
+            z-index: 10;
+            min-width: 40px; 
+            white-space: nowrap; 
+            text-align: center;
+            opacity: 0.9;
+            transition: opacity 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: none; 
+        }
+
+        /* 그리드 및 카드 */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: var(--card-white);
+            border-radius: 15px;
+            padding: 25px 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid var(--border-tan);
+            position: relative;
+        }
+        
+        .card::before {
+            position: absolute;
+            top: 15px; left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.65rem;
+            background: #8a8271;
+            color: #fff;
+            padding: 2px 12px;
+            border-radius: 10px;
+            letter-spacing: 1px;
+        }
+        
+        .card.S::before { content: "S TIER"; background: var(--tier-s); }
+        .card.A::before { content: "A TIER"; background: var(--tier-a); }
+        .card.B::before { content: "B TIER"; background: var(--tier-b); }
+        .card.C::before { content: "C TIER"; background: var(--tier-c); }
+        .card.D::before { content: "D TIER"; background: var(--tier-d); }
+
+        .card:hover { transform: translateY(-10px); border-color: var(--point-blue); }
+        .card.checked { background: #fdfaf5; border: 2px solid var(--point-blue); }
+
+        .img-box { 
+            width: 80px;
+            height: 80px; 
+            margin: 30px auto 15px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            background: #ffffff; 
+            border-radius: 12px;
+            border: 1px solid #f2ede4;
+        }
+        
+        .img-box img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: contain;
+        }
+
+        .name { 
+            font-size: 1.1rem; 
+            font-weight: bold; 
+            margin-bottom: 8px; 
+            height: 45px; 
+            overflow: hidden; 
+            /* 내부 콘텐츠 중앙 정렬을 위한 설정 */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.2; /* 줄 높이 조정 */
+        }
+        
+        /* [수정] 스택 카운트 배지 스타일 */
+        .stack-badge {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.65rem; /* 작은 크기 */
+            color: #fff;
+            background: #908a7c; /* 차분한 배경색 */
+            padding: 1px 5px;
+            border-radius: 6px;
+            font-weight: normal;
+            margin-top: 3px; /* 이름과 약간 분리 */
+            display: inline-block;
+        }
+
+
+        .price { font-size: 1.4rem; font-weight: bold; color: var(--point-blue); opacity: 1; }
+
+        .tier-line { height: 6px; border-radius: 3px; margin-top: 20px; }
+        .S .tier-line { background: var(--tier-s); }
+        .A .tier-line { background: var(--tier-a); }
+        .B .tier-line { background: var(--tier-b); }
+        .C .tier-line { background: var(--tier-c); }
+        .D .tier-line { background: var(--tier-d); }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: var(--border-tan); border-radius: 3px; }
+        
+        /* --- 모달 스타일 --- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: var(--bg-ivory);
+            color: var(--text-main);
+            padding: 30px;
+            border-radius: 15px;
+            width: 80%;
+            max-width: 900px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+            max-height: 90%;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--text-main); 
+            border-bottom: 2px solid var(--border-tan);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            display: flex; 
+            align-items: baseline;
+            justify-content: space-between;
+        }
+        
+        .modal-header-title { font-size: 1.5rem; white-space: nowrap; }
+        #modal-total-value-display, #modal-efficiency-info {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem; 
+            color: var(--point-blue); 
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-align: right;
+            line-height: 1;
+        }
+        #modal-efficiency-info {
+            font-size: 1rem;
+            color: #8c8c8c;
+            font-weight: normal;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 10px; right: 20px;
+            font-size: 2rem; font-weight: bold;
+            cursor: pointer; color: var(--point-pink);
+            line-height: 1;
+        }
+
+        #modal-wishlist-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .modal-item-card {
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid var(--border-tan);
+            transition: transform 0.2s;
+        }
+        
+        .modal-item-card.S { border-bottom: 5px solid var(--tier-s); }
+        .modal-item-card.A { border-bottom: 5px solid var(--tier-a); }
+        .modal-item-card.B { border-bottom: 5px solid var(--tier-b); }
+        .modal-item-card.C { border-bottom: 5px solid var(--tier-c); }
+        .modal-item-card.D { border-bottom: 5px solid var(--tier-d); }
+
+        .modal-item-icon { width: 70px; height: 70px; margin: 0 auto 10px; object-fit: contain; background: #f9f9f9; border-radius: 8px; }
+        .modal-item-name { 
+            font-weight: bold; 
+            font-size: 1rem; 
+            margin-bottom: 5px; 
+            min-height: 40px; 
+            overflow: hidden; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-item-price { font-family: 'Orbitron', sans-serif; color: var(--point-blue); font-weight: bold; font-size: 1.2rem; }
+        
+        /* [새로운 스타일] 효율표 모달 전용 스타일 */
+        .modal-efficiency-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+            padding-top: 5px;
+        }
+
+        .efficiency-item-card {
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 10px 15px;
+            text-align: left;
+            border: 1px solid var(--border-tan);
+            display: flex;
+            align-items: center;
+            transition: border 0.2s;
+            gap: 10px; /* 아이콘과 텍스트 간격 */
+        }
+        
+        .efficiency-item-card.S { border-left: 5px solid var(--tier-s); }
+        .efficiency-item-card.A { border-left: 5px solid var(--tier-a); }
+        .efficiency-item-card.B { border-left: 5px solid var(--tier-b); }
+        .efficiency-item-card.C { border-left: 5px solid var(--tier-c); }
+        .efficiency-item-card.D { border-left: 5px solid var(--tier-d); }
+
+        .efficiency-icon {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            background: #f9f9f9;
+            border-radius: 6px;
+            flex-shrink: 0;
+        }
+
+        /* [수정] 랭크 번호와 텍스트 간격 확보를 위한 스타일 */
+        .efficiency-rank {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem; /* 100위 이상 겹침 방지를 위해 약간 줄임 */
+            color: var(--point-pink);
+            font-weight: bold;
+            margin-right: 5px;
+            width: 40px; /* 너비 고정 */
+            text-align: center;
+            flex-shrink: 0;
+            line-height: 1;
+        }
+
+        .efficiency-info {
+            flex-grow: 1;
+        }
+        .efficiency-name {
+            font-weight: bold; 
+            font-size: 1rem; 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis;
+        }
+        .efficiency-value {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--point-blue);
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+        .efficiency-detail {
+            font-size: 0.75rem;
+            color: #8c8c8c;
+        }
+        
+        /* ---------------------------------- */
+        /* 💡 모바일 미디어 쿼리 (768px 이하) */
+        /* ---------------------------------- */
+        @media (max-width: 768px) {
+            
+            body {
+                flex-direction: column; 
+                height: auto; 
+                overflow-y: auto; 
+                padding-top: 200px;
+            }
+            
+            /* 1. 최상단 고정 헤더 (모바일) */
+            #fixed-header-container {
+                left: 0; 
+                width: 100%;
+                height: auto; 
+                min-height: auto;
+                padding: 10px 15px; 
+            }
+            .filter-group { gap: 5px 10px; justify-content: center; }
+
+            /* 💡 수정된 부분: 필터 라벨의 최소 너비를 줄여 공간 확보 */
+            .filter-label { 
+                min-width: 35px; /* 50px -> 35px로 줄임 */
+            }
+            
+            /* 2. 사이드바 (위시리스트) */
+            #sidebar {
+                position: relative; 
+                top: auto; left: auto;
+                width: 100%;
+                height: auto; 
+                overflow: visible; 
+                min-height: auto; 
+                box-shadow: none;
+                border-bottom: 1px solid var(--border-tan);
+                z-index: 1; /* 명시적으로 z-index 설정 */
+            }
+            .scrollable-content { padding-bottom: 10px; }
+            .logo-container { display: none; }
+            #reset-container-desktop { display: none; }
+            
+            #sidebar-section-header { margin-top: 10px; }
+            
+            /* 3. 메인 콘텐츠 */
+            .main-content {
+                margin-left: 0; 
+                padding: 10px; 
+                padding-bottom: calc(var(--fixed-height-mobile) + var(--padding-base)); 
+                overflow-y: visible; 
+            }
+
+            .mobile-separator { display: block; }
+            .acquisition-list-header { 
+                display: block; 
+                margin-bottom: 10px; 
+                font-family: 'Orbitron', sans-serif;
+                font-size: 1rem;
+                color: var(--point-blue);
+                border-bottom: 2px solid var(--border-tan);
+                padding-bottom: 5px;
+                text-align: center;
+            }
+
+            /* 4. 모바일 하단 고정 버튼 */
+            #reset-container-mobile {
+                display: flex; 
+                gap: 10px;    
+                align-items: center; 
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                background: var(--sidebar-ivory); 
+                padding: 10px 20px; 
+                box-shadow: 0 -4px 10px rgba(0,0,0,0.1);
+                z-index: 150;
+                box-sizing: border-box; 
+            }
+            #reset-container-mobile .btn-show-modal { position: relative; }
+            #reset-container-mobile .btn-show-modal > .item-count-badge {
+                top: -8px; right: -8px; 
+                font-size: 0.6rem; padding: 4px 8px; min-width: 35px;
+            }
+
+            .btn-show-modal, .btn-reset {
+                flex-grow: 1; 
+                width: auto;  
+                margin-bottom: 0; 
+            }
+            
+            /* 💡 5. 메인 그리드 3열 */
+            .grid { 
+                grid-template-columns: repeat(3, 1fr); 
+                gap: 8px; 
+                padding: 0 5px; 
+            }
+            
+            /* 메인 카드 모바일 최적화 */
+            .card { padding: 10px 5px; }
+            .card::before { font-size: 0.5rem; padding: 1px 8px; top: 8px; } 
+            .img-box { width: 50px; height: 50px; margin: 15px auto 5px; } 
+            .name { 
+                font-size: 0.75rem; 
+                min-height: 35px; 
+                margin-bottom: 3px; 
+            } 
+            /* [모바일 최적화] 스택 카운트 배지 스타일 */
+            .stack-badge {
+                font-size: 0.55rem;
+                padding: 1px 4px;
+                margin-top: 2px;
+            }
+            .price { font-size: 0.85rem; } 
+            .tier-line { margin-top: 10px; height: 4px; }
+
+            /* 💡 6. 사이드바 위시리스트 3열로 수정 및 최적화 */
+            #wishlist { 
+                display: grid; 
+                grid-template-columns: repeat(3, 1fr); /* 3개씩 */
+                gap: 8px; 
+                margin-bottom: 10px !important; 
+            }
+            .wishlist-item { 
+                padding: 5px; 
+                display: flex;
+                flex-direction: column; /* 카드 형태로 변경 */
+                align-items: center; 
+                text-align: center;
+                gap: 3px; 
+            }
+            .wish-icon { 
+                width: 35px; 
+                height: 35px; 
+                margin-bottom: 0;
+            }
+            .wishlist-item > div { width: 100%; }
+            .wishlist-item > div > div:first-child { font-size: 0.7rem; font-weight: bold; line-height: 1.2; height: 1.2rem; overflow: hidden;}
+            .wishlist-item > div > div:last-child { font-size: 0.65rem; font-weight: bold; }
+            
+            /* 💡 7. 모바일 모달 그리드 3열 */
+            .modal-content { width: 95%; padding: 15px; }
+            .modal-header { flex-direction: column; align-items: flex-start; }
+            .modal-header-title { margin-bottom: 5px; font-size: 1.1rem; }
+            #modal-total-value-display { font-size: 1.3rem; text-align: left; margin-left: 0; }
+            
+            #modal-wishlist-content { 
+                grid-template-columns: repeat(3, 1fr); 
+                gap: 8px; 
+            }
+            .modal-item-card { padding: 8px 4px; }
+            .modal-item-icon { width: 45px; height: 45px; margin-bottom: 5px; }
+            .modal-item-name { 
+                font-size: 0.7rem; 
+                min-height: 30px; 
+                margin-bottom: 2px;
+            }
+            .modal-item-price { font-size: 0.8rem; }
+            
+            /* [새로운 스타일] 효율표 모바일 최적화 */
+            .modal-efficiency-grid {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            .efficiency-rank { font-size: 1.1rem; width: 25px; } /* 모바일에서 더 줄임 */
+            .efficiency-name { font-size: 0.9rem; }
+            .efficiency-value { font-size: 1rem; }
+            .efficiency-detail { font-size: 0.7rem; }
+            .efficiency-item-card { padding: 8px 10px; }
+            .efficiency-icon { width: 35px; height: 35px; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="fixed-header-container">
+    <div class="net-worth-box">
+        <div class="net-worth-label">TOTAL COIN</div>
+        <div class="total-value" id="total-value-display">0 Coin</div>
+    </div>
+
+    <div class="search-group">
+        <button id="go-top-button" onclick="scrollToTop()">▲</button>
+        <input type="text" id="searchInput" placeholder="Search for items..." >
+    </div>
+    
+    <div id="filter-container">
+        </div>
+</div>
+
+<aside id="sidebar">
+    <div class="logo-container">
+        <img src="logo.png" alt="ARC RAIDERS" onerror="this.src='https://via.placeholder.com/340x180';">
+    </div>
+    
+    <div class="scrollable-content">
+        <div class="section-header" id="sidebar-section-header">TARGET ITEMS</div>
+        <div id="wishlist"></div>
+    </div>
+
+    <div id="reset-container-desktop"> 
+        <button class="btn-show-modal" onclick="openModal()">
+            VIEW
+            <span id="item-count-badge-desktop" class="item-count-badge">0 / 0</span>
+        </button>
+        <button class="btn-reset" onclick="clearStorage()">RESET</button>
+    </div>
+</aside>
+
+<main class="main-content" id="main-content">
+    
+    <div class="mobile-separator"></div>
+    <div class="acquisition-list-header">
+         ITEM LIST 
+    </div>
+
+    <div class="grid" id="mainGrid"></div>
+</main>
+
+<div id="reset-container-mobile">
+    <button class="btn-show-modal" onclick="openModal()">
+        VIEW
+        <span id="item-count-badge-mobile" class="item-count-badge">0 / 0</span>
+    </button>
+    <button class="btn-reset" onclick="clearStorage()">RESET</button>
+</div>
+
+<script src="data.js"></script>
+
+<script>
+    const IMAGE_FOLDER = "arc_raiders_images";
+    const STORAGE_KEY = "arc_Unified_Ivory_Final";
+    const FILTER_STORAGE_KEY = "arc_Unified_Ivory_Filters";
+    
+    const goTopButton = document.getElementById('go-top-button');
+    const totalValueDisplay = document.getElementById('total-value-display');
+    const itemCountBadgeDesktop = document.getElementById('item-count-badge-desktop');
+    const itemCountBadgeMobile = document.getElementById('item-count-badge-mobile');
+
+    const FILTER_OPTIONS = {
+        'Tier': ['S', 'A', 'B', 'C', 'D'], 
+    };
+
+    let selectedItems = new Set();
+    let activeFilters = {}; 
+    
+    function formatCoin(num) {
+        if (num >= 1000000) {
+            return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+        }
+        if (num >= 1000) {
+            return (num / 1000).toFixed(0) + 'K';
+        }
+        return num.toLocaleString();
+    }
+
+    function loadFilters() {
+        const savedFilters = localStorage.getItem(FILTER_STORAGE_KEY);
+        if (savedFilters) {
+            activeFilters = JSON.parse(savedFilters);
+        } else {
+            activeFilters['Tier'] = ['ALL'];
+        }
+    }
+
+    function saveFilters() {
+        localStorage.setItem(FILTER_STORAGE_KEY, JSON.stringify(activeFilters));
+    }
+    
+    function renderFilterCheckboxes() {
+        const container = document.getElementById('filter-container');
+        container.innerHTML = '';
+
+        for (const group in FILTER_OPTIONS) {
+            const groupDiv = document.createElement('div');
+            groupDiv.className = 'filter-group';
+
+            // Tier 그룹에 효율표 버튼 추가
+            if (group === 'Tier') {
+                const labelWrapper = document.createElement('div');
+                labelWrapper.style.display = 'flex';
+                labelWrapper.style.alignItems = 'center';
+
+                const label = document.createElement('div');
+                label.className = 'filter-label';
+                label.innerText = group.toUpperCase();
+                labelWrapper.appendChild(label);
+
+                const efficiencyButton = document.createElement('button');
+                efficiencyButton.innerHTML = '&#9888;'; // 느낌표 모양
+                efficiencyButton.onclick = openEfficiencyModal; // 새 함수 연결
+                efficiencyButton.title = '코인 효율표 보기 (Stack x Price)';
+                efficiencyButton.style.cssText = `
+                    background: none; border: none; color: var(--point-pink); 
+                    font-size: 1.1rem; cursor: pointer; margin-left: 2px; /* 💡 5px -> 2px로 수정 */
+                    line-height: 1; padding: 0; font-family: 'Orbitron', sans-serif;
+                `;
+                labelWrapper.appendChild(efficiencyButton);
+                groupDiv.appendChild(labelWrapper); // Wrapper를 추가
+            } else {
+                const label = document.createElement('div');
+                label.className = 'filter-label';
+                label.innerText = group.toUpperCase();
+                groupDiv.appendChild(label);
+            }
+            // [수정된 부분 끝]
+
+            const allOption = document.createElement('label');
+            allOption.className = 'filter-option';
+            const allInput = document.createElement('input');
+            allInput.type = 'checkbox';
+            allInput.value = 'ALL';
+            allInput.checked = activeFilters[group].includes('ALL');
+            allInput.onchange = () => handleFilterChange(group, 'ALL');
+            allOption.appendChild(allInput);
+            allOption.appendChild(document.createTextNode('ALL'));
+            groupDiv.appendChild(allOption);
+
+            FILTER_OPTIONS[group].forEach(option => {
+                const optionLabel = document.createElement('label');
+                optionLabel.className = 'filter-option';
+                const input = document.createElement('input');
+                input.type = 'checkbox';
+                input.value = option;
+                input.checked = !activeFilters[group].includes('ALL') && activeFilters[group].includes(option); 
+                input.onchange = () => handleFilterChange(group, option);
+                optionLabel.appendChild(input);
+                optionLabel.appendChild(document.createTextNode(option));
+                groupDiv.appendChild(optionLabel);
+            });
+
+            container.appendChild(groupDiv);
+        }
+    }
+
+    function handleFilterChange(group, option) {
+        let current = activeFilters[group];
+
+        if (option === 'ALL') {
+            current = ['ALL'];
+        } else {
+            if (current.includes('ALL')) {
+                current = [];
+            }
+            
+            const index = current.indexOf(option);
+            if (index > -1) {
+                current.splice(index, 1);
+            } else {
+                current.push(option);
+            }
+
+            if (current.length === 0) {
+                current = ['ALL'];
+            }
+        }
+
+        activeFilters[group] = current;
+        saveFilters();
+        renderFilterCheckboxes();
+        renderGrid(document.getElementById('searchInput').value);
+    }
+    
+    function handleScroll() {
+        const scrollPosition = window.scrollY || window.pageYOffset;
+        let shouldShowButton = scrollPosition > 200;
+
+        if (shouldShowButton) { 
+            goTopButton.style.opacity = '1';
+            goTopButton.style.visibility = 'visible';
+            goTopButton.classList.add('visible'); 
+        } else {
+            goTopButton.style.opacity = '0';
+            goTopButton.style.visibility = 'hidden';
+            goTopButton.classList.remove('visible'); 
+        }
+    }
+
+    function scrollToTop() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth' 
+        });
+    }
+
+    function init() {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) selectedItems = new Set(JSON.parse(saved));
+        
+        loadFilters();
+        renderFilterCheckboxes();
+        
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            renderGrid(e.target.value);
+        });
+        
+        window.addEventListener('scroll', handleScroll); 
+        window.addEventListener('resize', handleScroll);
+        
+        handleScroll(); 
+
+        renderGrid();
+        updateWishlist();
+    }
+
+    function renderGrid(filter = '') {
+        const mainGrid = document.getElementById('mainGrid');
+        mainGrid.innerHTML = '';
+        const lowerCaseFilter = filter.toLowerCase();
+
+        if (typeof lootItems === 'undefined') {
+            mainGrid.innerHTML = '<p>Error: lootItems data not loaded.</p>';
+            return;
+        }
+        
+        const itemsToRender = lootItems.filter(item => {
+            // Check against both English name (name) and Korean name (kr_name)
+            const matchesSearch = item.name.toLowerCase().includes(lowerCaseFilter) || 
+                                  (item.kr_name && item.kr_name.toLowerCase().includes(lowerCaseFilter));
+            const tierFilter = activeFilters['Tier'];
+            const matchesTier = tierFilter.includes('ALL') || tierFilter.includes(item.tier);
+            
+            return matchesSearch && matchesTier;
+        });
+
+        itemsToRender.sort((a,b) => b.price - a.price).forEach(item => {
+            const isChecked = selectedItems.has(String(item.id));
+            const card = document.createElement('div');
+            const tierClass = item.tier ? item.tier : ''; 
+
+            card.className = `card ${tierClass} ${isChecked ? 'checked' : ''}`;
+            // Use item.name for image file path (assuming image files are named after the English/original name)
+            const safeName = item.name.replace(/[\\/:*?"<>|]/g, '');
+
+            card.dataset.itemId = item.id;
+
+            card.onclick = () => toggleItem(item.id, card);
+            
+            // 💡 [수정된 부분] Stack Count Badge 추가
+            const stackCount = item.stack || 1; // stack이 없을 경우 기본값 1
+            const stackBadge = stackCount > 1 
+                ? `<span class="stack-badge">x${stackCount.toLocaleString()}</span>`
+                : '';
+                
+            card.innerHTML = `
+                <div class="img-box"><img src="${IMAGE_FOLDER}/${safeName}.webp" onerror="this.src='https://via.placeholder.com/160';"></div>
+                <div class="name">
+                    ${item.kr_name || item.name}
+                    ${stackBadge}
+                </div>
+                <div class="price">${item.price.toLocaleString()} Coin</div>
+                <div class="tier-line"></div>
+            `;
+            mainGrid.appendChild(card);
+        });
+    }
+
+    function toggleItem(id, cardEl) {
+        const itemId = String(id); 
+
+        if (selectedItems.has(itemId)) {
+            selectedItems.delete(itemId);
+            if (cardEl) {
+                cardEl.classList.remove('checked');
+            } else {
+                const gridCards = document.querySelectorAll('#mainGrid .card');
+                gridCards.forEach(card => {
+                    if (card.dataset.itemId === itemId) { 
+                        card.classList.remove('checked');
+                    }
+                });
+            }
+        } else {
+            selectedItems.add(itemId);
+            if (cardEl) cardEl.classList.add('checked');
+        }
+        updateWishlist();
+        localStorage.setItem(STORAGE_KEY, JSON.stringify([...selectedItems]));
+    }
+
+    function updateWishlist() {
+        const wishlistEl = document.getElementById('wishlist');
+        
+        const selectedList = lootItems.filter(item => selectedItems.has(String(item.id)));
+        const itemCount = selectedList.length; 
+        let total = 0;
+        selectedList.forEach(item => {
+            total += item.price;
+        });
+        
+        const totalString = total.toLocaleString() + ' Coin';
+        const formattedTotal = formatCoin(total); 
+        
+        // 총 금액 업데이트
+        totalValueDisplay.innerText = totalString;
+
+        // 배지 업데이트
+        const badgeContent = `${itemCount} / ${formattedTotal}`;
+        if (itemCountBadgeDesktop) {
+            itemCountBadgeDesktop.innerText = badgeContent;
+            itemCountBadgeDesktop.style.display = itemCount > 0 ? 'block' : 'none';
+        }
+        if (itemCountBadgeMobile) {
+            itemCountBadgeMobile.innerText = badgeContent;
+            itemCountBadgeMobile.style.display = itemCount > 0 ? 'block' : 'none';
+        }
+        
+        wishlistEl.innerHTML = '';
+        
+        if (itemCount === 0 && window.innerWidth <= 768) {
+            wishlistEl.style.marginBottom = '0';
+        } else {
+            wishlistEl.style.marginBottom = '20px';
+        }
+
+        selectedList.forEach(item => {
+            const safeName = item.name.replace(/[\\/:*?"<>|]/g, '');
+            const div = document.createElement('div');
+            div.className = `wishlist-item`;
+            div.innerHTML = `
+                <img src="${IMAGE_FOLDER}/${safeName}.webp" class="wish-icon" onerror="this.src='https://via.placeholder.com/45';">
+                <div style="flex-grow: 1;">
+                    <div style="font-weight:bold; font-size:0.85rem;">${item.kr_name || item.name}</div>
+                    <div style="color:var(--point-blue); font-size:0.8rem; font-weight:bold;">${item.price.toLocaleString()} Coin</div>
+                </div>
+            `;
+            wishlistEl.appendChild(div);
+        });
+
+        if (document.getElementById('big-wishlist-modal').style.display === 'flex') {
+            updateModalContent();
+        }
+    }
+
+    function clearStorage() {
+        if(confirm("모든 획득 목록과 필터 설정을 초기화하시겠습니까?")) {
+            selectedItems.clear();
+            localStorage.removeItem(STORAGE_KEY);
+            activeFilters['Tier'] = ['ALL'];
+            localStorage.setItem(FILTER_STORAGE_KEY, JSON.stringify(activeFilters));
+            renderFilterCheckboxes();
+            renderGrid();
+            updateWishlist();
+            closeModal();
+            closeEfficiencyModal(); // 효율표 모달도 닫기
+        }
+    }
+    
+    function updateModalContent() {
+        const modalContentEl = document.getElementById('modal-wishlist-content');
+        const modalTotalValueEl = document.getElementById('modal-total-value-display'); 
+        modalContentEl.innerHTML = '';
+        let total = 0;
+
+        const selectedList = lootItems.filter(item => selectedItems.has(String(item.id)));
+        
+        if (selectedList.length === 0) {
+            modalContentEl.innerHTML = '<p style="text-align: center; color: var(--point-pink); font-size: 1.2rem;">선택된 아이템이 없습니다.</p>';
+        } else {
+            selectedList.forEach(item => {
+                total += item.price;
+                const safeName = item.name.replace(/[\\/:*?"<>|]/g, '');
+                const div = document.createElement('div');
+                const tierClass = item.tier ? item.tier : '';
+                
+                // [수정] Stack Count Badge 추가
+                const stackCount = item.stack || 1;
+                const stackBadge = stackCount > 1 
+                    ? `<span class="stack-badge" style="font-size: 0.5rem; margin-top: 2px;">x${stackCount.toLocaleString()}</span>`
+                    : '';
+                    
+                div.className = `modal-item-card ${tierClass}`;
+                div.innerHTML = `
+                    <img src="${IMAGE_FOLDER}/${safeName}.webp" class="modal-item-icon" onerror="this.src='https://via.placeholder.com/70';">
+                    <div class="modal-item-name">
+                        ${item.kr_name || item.name}
+                        ${stackBadge}
+                    </div>
+                    <div class="modal-item-price">${item.price.toLocaleString()} Coin</div>
+                `;
+                modalContentEl.appendChild(div);
+            });
+        }
+
+        modalTotalValueEl.innerText = total.toLocaleString() + ' Coin'; 
+    }
+
+    function openModal() {
+        updateModalContent();
+        document.getElementById('big-wishlist-modal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('big-wishlist-modal').style.display = 'none';
+    }
+
+    // 코인 효율표 계산 및 렌더링
+    function calculateAndRenderEfficiency() {
+        const modalContentEl = document.getElementById('modal-efficiency-content');
+        modalContentEl.innerHTML = '';
+
+        if (typeof lootItems === 'undefined') {
+            modalContentEl.innerHTML = '<p style="text-align: center;">Error: Item data not loaded.</p>';
+            return;
+        }
+
+        // 1. 효율성 계산 (stack * price)
+        const efficiencyList = lootItems.map(item => {
+            // stack 필드가 없을 경우를 대비하여 기본값 1을 사용합니다.
+            const stack = item.stack || 1; 
+            const efficiency = item.price * stack;
+            return {
+                ...item,
+                efficiency: efficiency,
+                stack: stack 
+            };
+        });
+
+        // 2. 효율성 순으로 정렬 (내림차순)
+        efficiencyList.sort((a, b) => b.efficiency - a.efficiency);
+        
+        // 3. 모달에 렌더링
+        efficiencyList.forEach((item, index) => {
+            const div = document.createElement('div');
+            const tierClass = item.tier ? item.tier : '';
+            const safeName = item.name.replace(/[\\/:*?"<>|]/g, ''); // 이미지 파일명 생성
+
+            div.className = `efficiency-item-card ${tierClass}`;
+            
+            div.innerHTML = `
+                <div class="efficiency-rank">${index + 1}</div>
+                <img src="${IMAGE_FOLDER}/${safeName}.webp" class="efficiency-icon" onerror="this.src='https://via.placeholder.com/40';">
+                <div class="efficiency-info">
+                    <div class="efficiency-name">${item.kr_name || item.name}</div>
+                    <div class="efficiency-value">${item.efficiency.toLocaleString()} Coin</div>
+                    <div class="efficiency-detail">Stack: ${item.stack.toLocaleString()} x Price: ${item.price.toLocaleString()}</div>
+                </div>
+            `;
+            modalContentEl.appendChild(div);
+        });
+    }
+
+    // 효율표 모달 열기
+    function openEfficiencyModal() {
+        calculateAndRenderEfficiency();
+        document.getElementById('efficiency-modal').style.display = 'flex';
+    }
+
+    // 효율표 모달 닫기
+    function closeEfficiencyModal() {
+        document.getElementById('efficiency-modal').style.display = 'none';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const modal = document.getElementById('big-wishlist-modal');
+        if (modal) {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+        }
+        
+        // 효율표 모달 닫기 리스너 추가
+        const efficiencyModal = document.getElementById('efficiency-modal');
+        if (efficiencyModal) {
+            efficiencyModal.addEventListener('click', (e) => {
+                if (e.target === efficiencyModal) {
+                    closeEfficiencyModal();
+                }
+            });
+        }
+        
+        init();
+    });
+
+</script>
+
+<div id="big-wishlist-modal" class="modal-overlay">
+    <div class="modal-content">
+        <span class="modal-close" onclick="closeModal()">&times;</span>
+        <div class="modal-header">
+            <div class="modal-header-title">TARGET ITEM LIST</div>
+            <span id="modal-total-value-display">0 Coin</span>
+        </div>
+        <div id="modal-wishlist-content">
+            </div>
+    </div>
+</div>
+
+<div id="efficiency-modal" class="modal-overlay">
+    <div class="modal-content">
+        <span class="modal-close" onclick="closeEfficiencyModal()">&times;</span>
+        <div class="modal-header">
+            <div class="modal-header-title">COIN EFFICIENCY CHART</div>
+            <span id="modal-efficiency-info">Stack × Price = Efficiency</span>
+        </div>
+        <div id="modal-efficiency-content" class="modal-efficiency-grid">
+            <div style="text-align:center; padding: 20px; font-size: 1.1rem; color: #8c8c8c;">아이템 데이터를 불러오는 중...</div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

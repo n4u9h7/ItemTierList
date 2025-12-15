@@ -65,7 +65,7 @@
             padding: var(--padding-base);
             padding-bottom: 0;
             flex-grow: 1;
-            overflow-y: visible;
+            overflow-y: auto; /* <--- 수정됨: 아이템이 많을 경우 스크롤 가능 */
         }
 
         .logo-container {
@@ -225,6 +225,9 @@
             color: var(--point-pink);
             min-width: 50px;
             flex-shrink: 0;
+            /* Flexbox 추가하여 label과 icon을 정렬 */
+            display: flex; 
+            align-items: center;
         }
 
         .filter-option {
@@ -413,7 +416,7 @@
             line-height: 1.2; /* 줄 높이 조정 */
         }
         
-        /* [수정] 스택 카운트 배지 스타일 */
+        /* 스택 카운트 배지 스타일 */
         .stack-badge {
             font-family: 'Orbitron', sans-serif;
             font-size: 0.65rem; /* 작은 크기 */
@@ -465,6 +468,11 @@
             overflow-y: auto;
             position: relative;
         }
+        
+        /* 새 모달 컨텐츠를 위한 확장된 최대 너비 */
+        #materials-modal .modal-content {
+            max-width: 1100px;
+        }
 
         .modal-header {
             font-family: 'Orbitron', sans-serif;
@@ -478,7 +486,7 @@
         }
         
         .modal-header-title { font-size: 1.5rem; white-space: nowrap; }
-        #modal-total-value-display, #modal-efficiency-info {
+        #modal-total-value-display, #modal-efficiency-info, #modal-materials-info {
             font-family: 'Orbitron', sans-serif;
             font-size: 1.8rem; 
             color: var(--point-blue); 
@@ -488,6 +496,11 @@
             line-height: 1;
         }
         #modal-efficiency-info {
+            font-size: 1rem;
+            color: #8c8c8c;
+            font-weight: normal;
+        }
+        #modal-materials-info {
             font-size: 1rem;
             color: #8c8c8c;
             font-weight: normal;
@@ -536,7 +549,7 @@
         }
         .modal-item-price { font-family: 'Orbitron', sans-serif; color: var(--point-blue); font-weight: bold; font-size: 1.2rem; }
         
-        /* [새로운 스타일] 효율표 모달 전용 스타일 */
+        /* 효율표 모달 전용 스타일 */
         .modal-efficiency-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -562,23 +575,23 @@
         .efficiency-item-card.C { border-left: 5px solid var(--tier-c); }
         .efficiency-item-card.D { border-left: 5px solid var(--tier-d); }
 
-        .efficiency-icon {
-            width: 40px;
-            height: 40px;
-            object-fit: contain;
-            background: #f9f9f9;
-            border-radius: 6px;
+        .efficiency-icon { 
+            width: 40px; 
+            height: 40px; 
+            border-radius: 4px; 
+            object-fit: contain; 
+            background: #f9f9f9; 
             flex-shrink: 0;
+            margin-right: 5px;
         }
-
-        /* [수정] 랭크 번호와 텍스트 간격 확보를 위한 스타일 */
+        
         .efficiency-rank {
             font-family: 'Orbitron', sans-serif;
-            font-size: 1.3rem; /* 100위 이상 겹침 방지를 위해 약간 줄임 */
+            font-size: 1.3rem; 
             color: var(--point-pink);
             font-weight: bold;
             margin-right: 5px;
-            width: 40px; /* 너비 고정 */
+            width: 40px; 
             text-align: center;
             flex-shrink: 0;
             line-height: 1;
@@ -595,7 +608,7 @@
             text-overflow: ellipsis;
         }
         .efficiency-value {
-            font-family: 'Orbitron', sans-serif;
+            font-family: 'Orbitbitron', sans-serif;
             color: var(--point-blue);
             font-size: 1.1rem;
             font-weight: bold;
@@ -605,6 +618,81 @@
             color: #8c8c8c;
         }
         
+        /* ---------------------------------- */
+        /* 💡 추가된 재료 모달 스타일 */
+        /* ---------------------------------- */
+        #modal-materials-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .station-card {
+            background: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid var(--border-tan);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .station-header {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            color: var(--point-pink);
+            border-bottom: 2px solid var(--border-tan);
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+        }
+        .station-role {
+            font-size: 0.85rem;
+            color: #8c8c8c;
+            margin-bottom: 10px;
+            min-height: 40px;
+        }
+        .level-section {
+            background: #fdfaf5;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            border-left: 5px solid var(--point-blue);
+        }
+        .level-header {
+            font-weight: bold;
+            font-size: 1rem;
+            color: var(--text-main);
+            margin-bottom: 5px;
+        }
+        .level-materials {
+            font-size: 0.85rem;
+            line-height: 1.6; 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 8px 12px; 
+            margin-top: 5px;
+            font-weight: normal; 
+            color: var(--text-main);
+        }
+        .material-item {
+            display: flex;
+            align-items: center;
+            background: #ffffff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid var(--border-tan);
+            font-weight: bold;
+            color: var(--point-pink); 
+            white-space: nowrap;
+            /* 아이콘 제거로 인해 margin-right 조정 불필요 */
+        }
+        /* .material-icon CSS 블록 제거됨 (요청 반영) */
+        
+        .level-unlocks {
+            font-size: 0.85rem;
+            line-height: 1.4;
+            color: #555;
+            font-style: italic;
+            margin-top: 5px;
+        }
+
+
         /* ---------------------------------- */
         /* 💡 모바일 미디어 쿼리 (768px 이하) */
         /* ---------------------------------- */
@@ -627,9 +715,9 @@
             }
             .filter-group { gap: 5px 10px; justify-content: center; }
 
-            /* 💡 수정된 부분: 필터 라벨의 최소 너비를 줄여 공간 확보 */
+            /* 필터 라벨의 최소 너비를 줄여 공간 확보 */
             .filter-label { 
-                min-width: 35px; /* 50px -> 35px로 줄임 */
+                min-width: 35px; 
             }
             
             /* 2. 사이드바 (위시리스트) */
@@ -642,7 +730,7 @@
                 min-height: auto; 
                 box-shadow: none;
                 border-bottom: 1px solid var(--border-tan);
-                z-index: 1; /* 명시적으로 z-index 설정 */
+                z-index: 1; 
             }
             .scrollable-content { padding-bottom: 10px; }
             .logo-container { display: none; }
@@ -697,7 +785,7 @@
                 margin-bottom: 0; 
             }
             
-            /* 💡 5. 메인 그리드 3열 */
+            /* 5. 메인 그리드 3열 */
             .grid { 
                 grid-template-columns: repeat(3, 1fr); 
                 gap: 8px; 
@@ -713,7 +801,7 @@
                 min-height: 35px; 
                 margin-bottom: 3px; 
             } 
-            /* [모바일 최적화] 스택 카운트 배지 스타일 */
+            /* 스택 카운트 배지 스타일 */
             .stack-badge {
                 font-size: 0.55rem;
                 padding: 1px 4px;
@@ -722,17 +810,17 @@
             .price { font-size: 0.85rem; } 
             .tier-line { margin-top: 10px; height: 4px; }
 
-            /* 💡 6. 사이드바 위시리스트 3열로 수정 및 최적화 */
+            /* 6. 사이드바 위시리스트 3열로 수정 및 최적화 */
             #wishlist { 
                 display: grid; 
-                grid-template-columns: repeat(3, 1fr); /* 3개씩 */
+                grid-template-columns: repeat(3, 1fr); 
                 gap: 8px; 
                 margin-bottom: 10px !important; 
             }
             .wishlist-item { 
                 padding: 5px; 
                 display: flex;
-                flex-direction: column; /* 카드 형태로 변경 */
+                flex-direction: column; 
                 align-items: center; 
                 text-align: center;
                 gap: 3px; 
@@ -746,7 +834,7 @@
             .wishlist-item > div > div:first-child { font-size: 0.7rem; font-weight: bold; line-height: 1.2; height: 1.2rem; overflow: hidden;}
             .wishlist-item > div > div:last-child { font-size: 0.65rem; font-weight: bold; }
             
-            /* 💡 7. 모바일 모달 그리드 3열 */
+            /* 7. 모달 공통 모바일 최적화 */
             .modal-content { width: 95%; padding: 15px; }
             .modal-header { flex-direction: column; align-items: flex-start; }
             .modal-header-title { margin-bottom: 5px; font-size: 1.1rem; }
@@ -765,17 +853,28 @@
             }
             .modal-item-price { font-size: 0.8rem; }
             
-            /* [새로운 스타일] 효율표 모바일 최적화 */
+            /* 효율표 모바일 최적화 */
             .modal-efficiency-grid {
                 grid-template-columns: 1fr;
                 gap: 8px;
             }
-            .efficiency-rank { font-size: 1.1rem; width: 25px; } /* 모바일에서 더 줄임 */
+            .efficiency-rank { font-size: 1.1rem; width: 25px; } 
             .efficiency-name { font-size: 0.9rem; }
-            .efficiency-value { font-size: 1rem; }
+            .efficiency-value { font-size: 1.0rem; }
             .efficiency-detail { font-size: 0.7rem; }
             .efficiency-item-card { padding: 8px 10px; }
-            .efficiency-icon { width: 35px; height: 35px; }
+            
+            /* 재료 모달 모바일 최적화 */
+            #modal-materials-content {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            .station-card { padding: 10px; }
+            .station-header { font-size: 1rem; }
+            .station-role, .level-unlocks { font-size: 0.8rem; }
+            .level-materials { font-size: 0.8rem; }
+            /* .material-icon CSS 제거에 따라 관련 모바일 스타일도 불필요 */
+            .material-item { font-size: 0.8rem; }
         }
     </style>
 </head>
@@ -808,8 +907,11 @@
 
     <div id="reset-container-desktop"> 
         <button class="btn-show-modal" onclick="openModal()">
-            VIEW
+            VIEW TARGET LIST
             <span id="item-count-badge-desktop" class="item-count-badge">0 / 0</span>
+        </button>
+        <button class="btn-show-modal" style="background: #27ae60;" onclick="openMaterialsModal()">
+            VIEW CRAFTING MATERIALS
         </button>
         <button class="btn-reset" onclick="clearStorage()">RESET</button>
     </div>
@@ -827,8 +929,11 @@
 
 <div id="reset-container-mobile">
     <button class="btn-show-modal" onclick="openModal()">
-        VIEW
+        VIEW TARGET LIST
         <span id="item-count-badge-mobile" class="item-count-badge">0 / 0</span>
+    </button>
+     <button class="btn-show-modal" style="background: #27ae60;" onclick="openMaterialsModal()">
+        VIEW MATERIALS
     </button>
     <button class="btn-reset" onclick="clearStorage()">RESET</button>
 </div>
@@ -840,6 +945,10 @@
     const STORAGE_KEY = "arc_Unified_Ivory_Final";
     const FILTER_STORAGE_KEY = "arc_Unified_Ivory_Filters";
     
+    const mainGrid = document.getElementById('mainGrid');
+    const sidebarWishlist = document.getElementById('wishlist');
+    const searchInput = document.getElementById('searchInput');
+    const filterContainer = document.getElementById('filter-container');
     const goTopButton = document.getElementById('go-top-button');
     const totalValueDisplay = document.getElementById('total-value-display');
     const itemCountBadgeDesktop = document.getElementById('item-count-badge-desktop');
@@ -851,425 +960,608 @@
 
     let selectedItems = new Set();
     let activeFilters = {}; 
-    
-    function formatCoin(num) {
-        if (num >= 1000000) {
-            return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+
+    // ----------------------------------------------------
+    // 💡 [수정된 데이터] 제작소 업그레이드 재료 리스트 (이름만 data.js 기준으로 표준화)
+    // ----------------------------------------------------
+    const UPGRADE_MATERIALS = [
+        {
+            name: "총기 제작소",
+            en_name: "Gunsmith Station",
+            role: "모든 무기 제작 및 개조 담당. 업그레이드 시 상위 무기와 고급 부착물 설계도 해금.",
+            levels: [
+                { level: 1, materials: [
+                    { name: "Metal Parts", kr_name: "금속 부품", count: 20 }, 
+                    { name: "Rubber Parts", kr_name: "고무 부품", count: 30 }
+                ], unlocks: "기본 무기 제작 가능" },
+                { level: 2, materials: [
+                    { name: "Rusty Tool", kr_name: "녹슨 도구", count: 3 }, 
+                    { name: "Mechanical Parts", kr_name: "기계 부품", count: 5 }, 
+                    { name: "Wasp Driver", kr_name: "와스프 드라이버", count: 8 }
+                ], unlocks: "무기 종류 확장, 부착물 향상" },
+                { level: 3, materials: [
+                    { name: "Rusty Gear", kr_name: "녹슨 톱니바퀴", count: 3 }, 
+                    { name: "Advanced Mechanical Parts", kr_name: "고급 기계 부품", count: 5 }, 
+                    { name: "Sentinel Launch Core", kr_name: "센티넬 발사 코어", count: 4 }
+                ], unlocks: "에픽 무기, 3단계 개조 해금" }
+            ]
+        },
+        {
+            name: "장비 작업대",
+            en_name: "Gear Bench",
+            role: "방어막 및 슈트 제작. 방어력을 결정짓는 핵심 설비.",
+            levels: [
+                { level: 1, materials: [
+                    { name: "Plastic Parts", kr_name: "플라스틱 부품", count: 25 }, 
+                    { name: "Fabric", kr_name: "직물", count: 30 }
+                ], unlocks: "경량·준중량 실드, 기본 강화 슈트" },
+                { level: 2, materials: [
+                    { name: "Power Cable", kr_name: "전원 케이블", count: 3 }, 
+                    { name: "Electrical Parts", kr_name: "전기 부품", count: 5 }, 
+                    { name: "Wasp Driver", kr_name: "와스프 드라이버", count: 5 }
+                ], unlocks: "중량 실드, 마크2" },
+                { level: 3, materials: [
+                    { name: "Industrial Battery", kr_name: "산업용 배터리", count: 3 }, 
+                    { name: "Advanced Electrical Parts", kr_name: "고급 전기 부품", count: 5 }, 
+                    { name: "Bastion Cell", kr_name: "바스티온 전지", count: 6 }
+                ], unlocks: "마크3, 고급 강화 슈트" }
+            ]
+        },
+        {
+            name: "폭발물 스테이션",
+            en_name: "Explosives Station",
+            role: "제어용 및 지역 봉쇄용 폭발물 제작. 업그레이드 시 특수 효과 수류탄 제작 가능.",
+            levels: [
+                { level: 1, materials: [
+                    { name: "Chemicals", kr_name: "화학품", count: 50 }, 
+                    { name: "Arc Alloy", kr_name: "아크합금", count: 6 }
+                ], unlocks: "가스 수류탄, 경량 충돌 수류탄" },
+                { level: 2, materials: [
+                    { name: "Synthetic Fuel", kr_name: "합성 연료", count: 3 }, 
+                    { name: "Crude Explosive", kr_name: "조잡한 폭약", count: 5 }, 
+                    { name: "Pop Trigger", kr_name: "팝 트리거", count: 5 }
+                ], unlocks: "화염 피해 수류탄" },
+                { level: 3, materials: [
+                    { name: "Lab Reagent", kr_name: "연구실 시약", count: 3 }, 
+                    { name: "Mixed Powder", kr_name: "혼합 화약", count: 5 }, 
+                    { name: "Rocketeer Driver", kr_name: "로켓티어 드라이버", count: 3 }
+                ], unlocks: "중량 신관 수류탄" }
+            ]
+        },
+        {
+            name: "유틸리티 스테이션",
+            en_name: "Utility Station",
+            role: "정찰, 이동, 교란 등 다양한 전술 장비 제작.",
+            levels: [
+                { level: 1, materials: [
+                    { name: "Plastic Parts", kr_name: "플라스틱 부품", count: 50 }, 
+                    { name: "Arc Alloy", kr_name: "아크합금", count: 6 }
+                ], unlocks: "쌍안경, 문 잠금 장치, 연막탄" },
+                { level: 2, materials: [
+                    { name: "Damaged Heatsink", kr_name: "손상된 히트 싱크", count: 2 }, 
+                    { name: "Electrical Parts", kr_name: "전기 부품", count: 5 }, 
+                    { name: "Snitch Scanner", kr_name: "스니치 스캐너", count: 6 }
+                ], unlocks: "유인 수류탄" },
+                { level: 3, materials: [
+                    { name: "Damaged Motherboard", kr_name: "손상된 마더보드", count: 3 }, 
+                    { name: "Advanced Electrical Parts", kr_name: "고급 전기 부품", count: 5 }, 
+                    { name: "Ripper Pulse Unit", kr_name: "리퍼 펄스 유닛", count: 4 }
+                ], unlocks: "스냅 훅, 표식 수류탄" }
+            ]
+        },
+        {
+            name: "의약품 연구실",
+            en_name: "Medical Lab",
+            role: "치유 아이템과 의약품 제작소. 레벨이 올라갈수록 더 빠른 회복 아이템과 효율적인 소모품 제작 가능.",
+            levels: [
+                { level: 1, materials: [
+                    { name: "Fabric", kr_name: "직물", count: 50 }, 
+                    { name: "Arc Alloy", kr_name: "아크합금", count: 6 }
+                ], unlocks: "기본 의료 아이템" },
+                { level: 2, materials: [
+                    { name: "Broken Bioscanner", kr_name: "깨진 바이오스캐너", count: 2 }, 
+                    { name: "Tough Fabric", kr_name: "질긴 천", count: 5 }, 
+                    { name: "Tick Pod", kr_name: "틱 포드", count: 8 }
+                ], unlocks: "고급 치유 아이템" },
+                { level: 3, materials: [
+                    { name: "Closed Medical Box", kr_name: "닫힌 의료상자", count: 3 }, 
+                    { name: "Disinfectant", kr_name: "소독약", count: 8 }, 
+                    { name: "Surveyor Bolt Part", kr_name: "서베이어 볼트 부품", count: 5 }
+                ], unlocks: "즉시 치유 아이템" }
+            ]
+        },
+        {
+            name: "가공기",
+            en_name: "Refiner Station",
+            role: "기본 자원을 희귀 자원으로 변환. 농사·파밍 부담을 줄여주는 핵심 설비.",
+            levels: [
+                { level: 1, materials: [
+                    { name: "Metal Parts", kr_name: "금속 부품", count: 60 }, 
+                    { name: "Arc Power Cell", kr_name: "아크 파워셀", count: 5 }
+                ], unlocks: "전기 부품, 조악한 폭발물, 기계 부품" },
+                { level: 2, materials: [
+                    { name: "Toaster", kr_name: "토스터", count: 3 }, 
+                    { name: "Arc Motion Core", kr_name: "아크 모션 코어", count: 5 }, 
+                    { name: "Fireball Burner", kr_name: "파이어볼 버너", count: 8 }
+                ], unlocks: "고급 부품, 총기 부품" },
+                { level: 3, materials: [
+                    { name: "Motor", kr_name: "모터", count: 3 }, 
+                    { name: "Arc Circuit", kr_name: "아크 회로", count: 10 }, 
+                    { name: "Bombardier Cell", kr_name: "봄바디어 전지", count: 6 }
+                ], unlocks: "모드 부품, 파워 로드" }
+            ]
+        },
+        {
+            name: "꼬꼬",
+            en_name: "KkoKko",
+            role: "기본 자원을 채집. 레벨이 올라갈수록 더 많은 기본재료를 채집.",
+            levels: [
+                { level: 2, materials: [
+                    { name: "Dog Collar", kr_name: "개 목걸이", count: 1 } 
+                ], unlocks: "" },
+                { level: 3, materials: [
+                    { name: "Lemon", kr_name: "레몬", count: 3 }, 
+                    { name: "Apricot", kr_name: "살구", count: 3 }
+                ], unlocks: "" },
+                { level: 4, materials: [
+                    { name: "Cactus", kr_name: "선인장", count: 6 }, 
+                    { name: "Olive", kr_name: "올리브", count: 6 }, 
+                    { name: "Cat Bed", kr_name: "고양이 침대", count: 1 } 
+                ], unlocks: "" },
+                { level: 5, materials: [
+                    { name: "Mushroom", kr_name: "버섯", count: 12 }, 
+                    { name: "Apricot", kr_name: "살구", count: 12 }, 
+                    { name: "Very Comfortable Pillow", kr_name: "매우 편안한 베개", count: 3 }
+                ], unlocks: "" }
+            ]
         }
-        if (num >= 1000) {
-            return (num / 1000).toFixed(0) + 'K';
-        }
-        return num.toLocaleString();
+    ];
+
+    // ----------------------------------------------------
+    // Main Logic Functions
+    // ----------------------------------------------------
+
+    // 필터 생성 및 초기화 (❗느낌표 아이콘 위치 수정 완료)
+    function setupFilters() {
+        const html = Object.entries(FILTER_OPTIONS).map(([group, options]) => {
+            // Tier 그룹일 때만 모달 호출 기능 추가
+            const exclamationIcon = (group === 'Tier') 
+                ? `<span style="color:var(--point-pink); margin-left:5px; font-weight:bold; font-size:1.1rem; cursor:pointer;" 
+                       onclick="openEfficiencyModal()" 
+                       title="Stack당 코인 효율 순위 보기">!</span>`
+                : `<span style="color:var(--point-pink); margin-left:5px; font-weight:bold; font-size:1.1rem;">!</span>`;
+
+            return `
+                <div class="filter-group">
+                    <div class="filter-label">
+                        ${group} 
+                        ${exclamationIcon} </div>
+                    <label class="filter-option">
+                        <input type="checkbox" data-group="${group}" data-value="ALL" onchange="handleFilterChange(this)">
+                        ALL
+                    </label>
+                    ${options.map(option => `
+                        <label class="filter-option">
+                            <input type="checkbox" data-group="${group}" data-value="${option}" onchange="handleFilterChange(this)">
+                            ${option}
+                        </label>
+                    `).join('')}
+                </div>
+            `;
+        }).join('<div style="width:100%; height:1px; background:#f2ede4; margin:5px 0;"></div>');
+
+        filterContainer.innerHTML = html;
+        loadFilters();
     }
 
-    function loadFilters() {
-        const savedFilters = localStorage.getItem(FILTER_STORAGE_KEY);
-        if (savedFilters) {
-            activeFilters = JSON.parse(savedFilters);
-        } else {
-            activeFilters['Tier'] = ['ALL'];
+    // 필터 변경 처리 (ALL 옵션 로직 포함하여 수정)
+    function handleFilterChange(checkbox) {
+        const group = checkbox.dataset.group;
+        const value = checkbox.dataset.value;
+        // ALL을 제외한 티어 체크박스들
+        const tierCheckboxes = document.querySelectorAll(`input[data-group="${group}"]:not([data-value="ALL"])`);
+        const allCheckbox = document.querySelector(`input[data-group="${group}"][data-value="ALL"]`);
+
+        if (!activeFilters[group]) {
+            activeFilters[group] = new Set();
         }
-    }
 
-    function saveFilters() {
-        localStorage.setItem(FILTER_STORAGE_KEY, JSON.stringify(activeFilters));
-    }
-    
-    function renderFilterCheckboxes() {
-        const container = document.getElementById('filter-container');
-        container.innerHTML = '';
-
-        for (const group in FILTER_OPTIONS) {
-            const groupDiv = document.createElement('div');
-            groupDiv.className = 'filter-group';
-
-            // Tier 그룹에 효율표 버튼 추가
-            if (group === 'Tier') {
-                const labelWrapper = document.createElement('div');
-                labelWrapper.style.display = 'flex';
-                labelWrapper.style.alignItems = 'center';
-
-                const label = document.createElement('div');
-                label.className = 'filter-label';
-                label.innerText = group.toUpperCase();
-                labelWrapper.appendChild(label);
-
-                const efficiencyButton = document.createElement('button');
-                efficiencyButton.innerHTML = '&#9888;'; // 느낌표 모양
-                efficiencyButton.onclick = openEfficiencyModal; // 새 함수 연결
-                efficiencyButton.title = '코인 효율표 보기 (Stack x Price)';
-                efficiencyButton.style.cssText = `
-                    background: none; border: none; color: var(--point-pink); 
-                    font-size: 1.1rem; cursor: pointer; margin-left: 2px; /* 💡 5px -> 2px로 수정 */
-                    line-height: 1; padding: 0; font-family: 'Orbitron', sans-serif;
-                `;
-                labelWrapper.appendChild(efficiencyButton);
-                groupDiv.appendChild(labelWrapper); // Wrapper를 추가
+        if (value === 'ALL') {
+            // ALL 체크박스 클릭
+            if (checkbox.checked) {
+                // ALL 선택 시, 모든 티어 체크 해제 및 activeFilters 클리어
+                tierCheckboxes.forEach(cb => cb.checked = false);
+                activeFilters[group].clear();
             } else {
-                const label = document.createElement('div');
-                label.className = 'filter-label';
-                label.innerText = group.toUpperCase();
-                groupDiv.appendChild(label);
+                // ALL 해제 방지 (다른 티어가 선택되지 않은 경우)
+                if (activeFilters[group].size === 0) {
+                    checkbox.checked = true;
+                    return; // 상태 변화 없음
+                }
             }
-            // [수정된 부분 끝]
-
-            const allOption = document.createElement('label');
-            allOption.className = 'filter-option';
-            const allInput = document.createElement('input');
-            allInput.type = 'checkbox';
-            allInput.value = 'ALL';
-            allInput.checked = activeFilters[group].includes('ALL');
-            allInput.onchange = () => handleFilterChange(group, 'ALL');
-            allOption.appendChild(allInput);
-            allOption.appendChild(document.createTextNode('ALL'));
-            groupDiv.appendChild(allOption);
-
-            FILTER_OPTIONS[group].forEach(option => {
-                const optionLabel = document.createElement('label');
-                optionLabel.className = 'filter-option';
-                const input = document.createElement('input');
-                input.type = 'checkbox';
-                input.value = option;
-                input.checked = !activeFilters[group].includes('ALL') && activeFilters[group].includes(option); 
-                input.onchange = () => handleFilterChange(group, option);
-                optionLabel.appendChild(input);
-                optionLabel.appendChild(document.createTextNode(option));
-                groupDiv.appendChild(optionLabel);
-            });
-
-            container.appendChild(groupDiv);
-        }
-    }
-
-    function handleFilterChange(group, option) {
-        let current = activeFilters[group];
-
-        if (option === 'ALL') {
-            current = ['ALL'];
         } else {
-            if (current.includes('ALL')) {
-                current = [];
-            }
-            
-            const index = current.indexOf(option);
-            if (index > -1) {
-                current.splice(index, 1);
+            // 티어 체크박스 클릭 (S, A, B, C, D)
+            if (checkbox.checked) {
+                activeFilters[group].add(value);
+                // 티어 선택 시, ALL 체크 해제
+                if (allCheckbox) allCheckbox.checked = false;
             } else {
-                current.push(option);
-            }
-
-            if (current.length === 0) {
-                current = ['ALL'];
+                activeFilters[group].delete(value);
+                // 마지막 티어가 해제되면, ALL 자동 선택
+                if (activeFilters[group].size === 0) {
+                    if (allCheckbox) allCheckbox.checked = true;
+                }
             }
         }
-
-        activeFilters[group] = current;
+        
         saveFilters();
-        renderFilterCheckboxes();
-        renderGrid(document.getElementById('searchInput').value);
+        renderGrid();
     }
-    
-    function handleScroll() {
-        const scrollPosition = window.scrollY || window.pageYOffset;
-        let shouldShowButton = scrollPosition > 200;
 
-        if (shouldShowButton) { 
-            goTopButton.style.opacity = '1';
-            goTopButton.style.visibility = 'visible';
-            goTopButton.classList.add('visible'); 
+    // 필터 저장
+    function saveFilters() {
+        const serializableFilters = {};
+        for (const [group, values] of Object.entries(activeFilters)) {
+            serializableFilters[group] = Array.from(values);
+        }
+        localStorage.setItem(FILTER_STORAGE_KEY, JSON.stringify(serializableFilters));
+    }
+
+    // 필터 로드 (ALL 옵션 로직 포함하여 수정)
+    function loadFilters() {
+        const savedFilters = JSON.parse(localStorage.getItem(FILTER_STORAGE_KEY));
+        
+        if (savedFilters) {
+            activeFilters = {};
+            for (const [group, values] of Object.entries(savedFilters)) {
+                activeFilters[group] = new Set(values);
+                
+                // 1. 개별 티어 체크박스 상태 설정
+                values.forEach(value => {
+                    const checkbox = document.querySelector(`input[data-group="${group}"][data-value="${value}"]`);
+                    if (checkbox) {
+                        checkbox.checked = true;
+                    }
+                });
+                
+                // 2. ALL 체크박스 상태 설정
+                const allCheckbox = document.querySelector(`input[data-group="${group}"][data-value="ALL"]`);
+                if (activeFilters[group].size === 0) {
+                    // 선택된 티어가 없으면 ALL 체크
+                    if (allCheckbox) allCheckbox.checked = true;
+                } else {
+                    // 선택된 티어가 있으면 ALL 체크 해제
+                    if (allCheckbox) allCheckbox.checked = false;
+                }
+            }
         } else {
-            goTopButton.style.opacity = '0';
-            goTopButton.style.visibility = 'hidden';
-            goTopButton.classList.remove('visible'); 
+             // 최초 로드 시 activeFilters가 비어 있으므로, 모든 그룹의 ALL을 체크
+             Object.keys(FILTER_OPTIONS).forEach(group => {
+                const allCheckbox = document.querySelector(`input[data-group="${group}"][data-value="ALL"]`);
+                if (allCheckbox) {
+                    allCheckbox.checked = true;
+                }
+             });
+        }
+    }
+
+    // 메인 그리드 렌더링
+    function renderGrid() {
+        const searchQuery = searchInput.value.toLowerCase();
+        let filteredItems = lootItems.filter(item => {
+            // 1. 검색 필터
+            const matchesSearch = item.kr_name.toLowerCase().includes(searchQuery) || 
+                                  item.name.toLowerCase().includes(searchQuery);
+
+            if (!matchesSearch) return false;
+
+            // 2. 등급 필터
+            // activeFilters.Tier가 존재하고, 크기가 0보다 크면 필터링을 적용합니다. 
+            // activeFilters.Tier의 크기가 0이면 (ALL이 선택된 상태) 필터링을 건너뛰도록 합니다.
+            if (activeFilters.Tier && activeFilters.Tier.size > 0) {
+                if (!activeFilters.Tier.has(item.tier)) {
+                    return false;
+                }
+            }
+
+            return true;
+        });
+
+        // 가격 역순 정렬
+        filteredItems.sort((a, b) => b.price - a.price);
+
+        mainGrid.innerHTML = filteredItems.map(item => {
+            const safeName = item.name.replace(/[\\/:*?"<>|]/g, '');
+            const isChecked = selectedItems.has(item.id);
+            const stackBadge = item.stack > 1 ? `<span class="stack-badge">Stack ${item.stack}</span>` : '';
+            
+            return `
+                <div class="card ${item.tier} ${isChecked ? 'checked' : ''}" data-id="${item.id}" onclick="toggleSelect(${item.id})">
+                    <div class="img-box">
+                        <img src="${IMAGE_FOLDER}/${safeName}.webp" alt="${item.kr_name}" class="item-icon" onerror="this.src='https://via.placeholder.com/80';">
+                    </div>
+                    <div class="name">${item.kr_name}<br>${stackBadge}</div>
+                    <div class="price">${item.price.toLocaleString()} Coin</div>
+                    <div class="tier-line"></div>
+                </div>
+            `;
+        }).join('');
+
+        // 검색/필터 결과가 없는 경우 처리
+        if (filteredItems.length === 0) {
+             mainGrid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 50px; color: #8c8c8c;">검색 결과가 없습니다.</div>';
+        }
+    }
+
+    // 아이템 선택/해제 토글
+    function toggleSelect(id) {
+        if (selectedItems.has(id)) {
+            selectedItems.delete(id);
+        } else {
+            selectedItems.add(id);
+        }
+        saveSelectedItems();
+        renderGrid();
+        renderWishlist();
+        updateTotalValue();
+    }
+
+    // 선택된 아이템 저장
+    function saveSelectedItems() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(selectedItems)));
+    }
+
+    // 선택된 아이템 로드
+    function loadSelectedItems() {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+            selectedItems = new Set(JSON.parse(saved).map(Number));
+        }
+    }
+
+    // 총 가치 업데이트
+    function updateTotalValue() {
+        let totalValue = 0;
+        let totalItems = 0;
+        selectedItems.forEach(id => {
+            const item = lootItems.find(i => i.id === id);
+            if (item) {
+                totalValue += item.price;
+                totalItems++;
+            }
+        });
+        
+        totalValueDisplay.textContent = totalValue.toLocaleString() + ' Coin';
+        
+        const totalLootItems = lootItems.length;
+        const badgeText = `${totalItems} / ${totalLootItems}`;
+        
+        itemCountBadgeDesktop.textContent = badgeText;
+        itemCountBadgeMobile.textContent = badgeText;
+
+        // 아이템 개수가 1개 이상이면 배지 표시
+        if (totalItems > 0) {
+            itemCountBadgeDesktop.style.display = 'block';
+            itemCountBadgeMobile.style.display = 'block';
+        } else {
+            itemCountBadgeDesktop.style.display = 'none';
+            itemCountBadgeMobile.style.display = 'none';
+        }
+    }
+
+    // 사이드바 위시리스트 렌더링
+    function renderWishlist() {
+        sidebarWishlist.innerHTML = Array.from(selectedItems).map(id => {
+            const item = lootItems.find(i => i.id === id);
+            if (!item) return '';
+
+            const safeName = item.name.replace(/[\\/:*?"<>|]/g, '');
+            return `
+                <div class="wishlist-item" onclick="toggleSelect(${item.id})">
+                    <img src="${IMAGE_FOLDER}/${safeName}.webp" alt="${item.kr_name}" class="wish-icon" onerror="this.src='https://via.placeholder.com/40';">
+                    <div>
+                        <div>${item.kr_name}</div>
+                        <div>${item.price.toLocaleString()} Coin</div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        
+        // "선택된 아이템이 없습니다" 텍스트 제거 요청 반영 (이전 단계에서 이미 반영됨)
+    }
+
+    // 로컬 스토리지 초기화
+    function clearStorage() {
+        if (confirm("선택된 모든 아이템 목록과 필터 설정을 초기화하시겠습니까?")) {
+            localStorage.removeItem(STORAGE_KEY);
+            localStorage.removeItem(FILTER_STORAGE_KEY);
+            selectedItems = new Set();
+            activeFilters = {};
+            document.querySelectorAll('#filter-container input[type="checkbox"]').forEach(cb => cb.checked = false);
+            searchInput.value = '';
+            
+            // 필터 초기화 후, ALL이 다시 선택되도록 loadFilters 호출
+            setupFilters(); 
+
+            renderGrid();
+            renderWishlist();
+            updateTotalValue();
+        }
+    }
+
+    // 스크롤 이벤트 (Go-Top 버튼)
+    function handleScroll() {
+        if (window.scrollY > 200) {
+            goTopButton.classList.add('visible');
+        } else {
+            goTopButton.classList.remove('visible');
         }
     }
 
     function scrollToTop() {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth' 
-        });
-    }
-
-    function init() {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) selectedItems = new Set(JSON.parse(saved));
-        
-        loadFilters();
-        renderFilterCheckboxes();
-        
-        document.getElementById('searchInput').addEventListener('input', (e) => {
-            renderGrid(e.target.value);
-        });
-        
-        window.addEventListener('scroll', handleScroll); 
-        window.addEventListener('resize', handleScroll);
-        
-        handleScroll(); 
-
-        renderGrid();
-        updateWishlist();
-    }
-
-    function renderGrid(filter = '') {
-        const mainGrid = document.getElementById('mainGrid');
-        mainGrid.innerHTML = '';
-        const lowerCaseFilter = filter.toLowerCase();
-
-        if (typeof lootItems === 'undefined') {
-            mainGrid.innerHTML = '<p>Error: lootItems data not loaded.</p>';
-            return;
-        }
-        
-        const itemsToRender = lootItems.filter(item => {
-            // Check against both English name (name) and Korean name (kr_name)
-            const matchesSearch = item.name.toLowerCase().includes(lowerCaseFilter) || 
-                                  (item.kr_name && item.kr_name.toLowerCase().includes(lowerCaseFilter));
-            const tierFilter = activeFilters['Tier'];
-            const matchesTier = tierFilter.includes('ALL') || tierFilter.includes(item.tier);
-            
-            return matchesSearch && matchesTier;
-        });
-
-        itemsToRender.sort((a,b) => b.price - a.price).forEach(item => {
-            const isChecked = selectedItems.has(String(item.id));
-            const card = document.createElement('div');
-            const tierClass = item.tier ? item.tier : ''; 
-
-            card.className = `card ${tierClass} ${isChecked ? 'checked' : ''}`;
-            // Use item.name for image file path (assuming image files are named after the English/original name)
-            const safeName = item.name.replace(/[\\/:*?"<>|]/g, '');
-
-            card.dataset.itemId = item.id;
-
-            card.onclick = () => toggleItem(item.id, card);
-            
-            // 💡 [수정된 부분] Stack Count Badge 추가
-            const stackCount = item.stack || 1; // stack이 없을 경우 기본값 1
-            const stackBadge = stackCount > 1 
-                ? `<span class="stack-badge">x${stackCount.toLocaleString()}</span>`
-                : '';
-                
-            card.innerHTML = `
-                <div class="img-box"><img src="${IMAGE_FOLDER}/${safeName}.webp" onerror="this.src='https://via.placeholder.com/160';"></div>
-                <div class="name">
-                    ${item.kr_name || item.name}
-                    ${stackBadge}
-                </div>
-                <div class="price">${item.price.toLocaleString()} Coin</div>
-                <div class="tier-line"></div>
-            `;
-            mainGrid.appendChild(card);
-        });
-    }
-
-    function toggleItem(id, cardEl) {
-        const itemId = String(id); 
-
-        if (selectedItems.has(itemId)) {
-            selectedItems.delete(itemId);
-            if (cardEl) {
-                cardEl.classList.remove('checked');
-            } else {
-                const gridCards = document.querySelectorAll('#mainGrid .card');
-                gridCards.forEach(card => {
-                    if (card.dataset.itemId === itemId) { 
-                        card.classList.remove('checked');
-                    }
-                });
-            }
-        } else {
-            selectedItems.add(itemId);
-            if (cardEl) cardEl.classList.add('checked');
-        }
-        updateWishlist();
-        localStorage.setItem(STORAGE_KEY, JSON.stringify([...selectedItems]));
-    }
-
-    function updateWishlist() {
-        const wishlistEl = document.getElementById('wishlist');
-        
-        const selectedList = lootItems.filter(item => selectedItems.has(String(item.id)));
-        const itemCount = selectedList.length; 
-        let total = 0;
-        selectedList.forEach(item => {
-            total += item.price;
-        });
-        
-        const totalString = total.toLocaleString() + ' Coin';
-        const formattedTotal = formatCoin(total); 
-        
-        // 총 금액 업데이트
-        totalValueDisplay.innerText = totalString;
-
-        // 배지 업데이트
-        const badgeContent = `${itemCount} / ${formattedTotal}`;
-        if (itemCountBadgeDesktop) {
-            itemCountBadgeDesktop.innerText = badgeContent;
-            itemCountBadgeDesktop.style.display = itemCount > 0 ? 'block' : 'none';
-        }
-        if (itemCountBadgeMobile) {
-            itemCountBadgeMobile.innerText = badgeContent;
-            itemCountBadgeMobile.style.display = itemCount > 0 ? 'block' : 'none';
-        }
-        
-        wishlistEl.innerHTML = '';
-        
-        if (itemCount === 0 && window.innerWidth <= 768) {
-            wishlistEl.style.marginBottom = '0';
-        } else {
-            wishlistEl.style.marginBottom = '20px';
-        }
-
-        selectedList.forEach(item => {
-            const safeName = item.name.replace(/[\\/:*?"<>|]/g, '');
-            const div = document.createElement('div');
-            div.className = `wishlist-item`;
-            div.innerHTML = `
-                <img src="${IMAGE_FOLDER}/${safeName}.webp" class="wish-icon" onerror="this.src='https://via.placeholder.com/45';">
-                <div style="flex-grow: 1;">
-                    <div style="font-weight:bold; font-size:0.85rem;">${item.kr_name || item.name}</div>
-                    <div style="color:var(--point-blue); font-size:0.8rem; font-weight:bold;">${item.price.toLocaleString()} Coin</div>
-                </div>
-            `;
-            wishlistEl.appendChild(div);
-        });
-
-        if (document.getElementById('big-wishlist-modal').style.display === 'flex') {
-            updateModalContent();
-        }
-    }
-
-    function clearStorage() {
-        if(confirm("모든 획득 목록과 필터 설정을 초기화하시겠습니까?")) {
-            selectedItems.clear();
-            localStorage.removeItem(STORAGE_KEY);
-            activeFilters['Tier'] = ['ALL'];
-            localStorage.setItem(FILTER_STORAGE_KEY, JSON.stringify(activeFilters));
-            renderFilterCheckboxes();
-            renderGrid();
-            updateWishlist();
-            closeModal();
-            closeEfficiencyModal(); // 효율표 모달도 닫기
-        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
     
-    function updateModalContent() {
-        const modalContentEl = document.getElementById('modal-wishlist-content');
-        const modalTotalValueEl = document.getElementById('modal-total-value-display'); 
-        modalContentEl.innerHTML = '';
-        let total = 0;
+    // ----------------------------------------------------
+    // Modals
+    // ----------------------------------------------------
 
-        const selectedList = lootItems.filter(item => selectedItems.has(String(item.id)));
+    // TARGET ITEM LIST MODAL
+    function openModal() {
+        const modal = document.getElementById('big-wishlist-modal');
+        const modalContent = document.getElementById('modal-wishlist-content');
+        const modalTotalValueDisplay = document.getElementById('modal-total-value-display');
         
-        if (selectedList.length === 0) {
-            modalContentEl.innerHTML = '<p style="text-align: center; color: var(--point-pink); font-size: 1.2rem;">선택된 아이템이 없습니다.</p>';
-        } else {
-            selectedList.forEach(item => {
-                total += item.price;
-                const safeName = item.name.replace(/[\\/:*?"<>|]/g, '');
-                const div = document.createElement('div');
-                const tierClass = item.tier ? item.tier : '';
-                
-                // [수정] Stack Count Badge 추가
-                const stackCount = item.stack || 1;
-                const stackBadge = stackCount > 1 
-                    ? `<span class="stack-badge" style="font-size: 0.5rem; margin-top: 2px;">x${stackCount.toLocaleString()}</span>`
-                    : '';
-                    
-                div.className = `modal-item-card ${tierClass}`;
-                div.innerHTML = `
-                    <img src="${IMAGE_FOLDER}/${safeName}.webp" class="modal-item-icon" onerror="this.src='https://via.placeholder.com/70';">
-                    <div class="modal-item-name">
-                        ${item.kr_name || item.name}
-                        ${stackBadge}
-                    </div>
+        let totalValue = 0;
+
+        modalContent.innerHTML = Array.from(selectedItems).map(id => {
+            const item = lootItems.find(i => i.id === id);
+            if (!item) return '';
+            
+            totalValue += item.price;
+            const safeName = item.name.replace(/[\\/:*?"<>|]/g, '');
+
+            return `
+                <div class="modal-item-card ${item.tier}" onclick="toggleSelect(${item.id}); renderModalWishlist()">
+                    <img src="${IMAGE_FOLDER}/${safeName}.webp" alt="${item.kr_name}" class="modal-item-icon" onerror="this.src='https://via.placeholder.com/70';">
+                    <div class="modal-item-name">${item.kr_name}</div>
                     <div class="modal-item-price">${item.price.toLocaleString()} Coin</div>
-                `;
-                modalContentEl.appendChild(div);
-            });
+                </div>
+            `;
+        }).join('');
+        
+        modalTotalValueDisplay.textContent = totalValue.toLocaleString() + ' Coin';
+        
+        if (selectedItems.size === 0) {
+             modalContent.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; color: #8c8c8c; padding: 50px;">선택된 아이템이 없습니다.</div>';
         }
 
-        modalTotalValueEl.innerText = total.toLocaleString() + ' Coin'; 
-    }
-
-    function openModal() {
-        updateModalContent();
-        document.getElementById('big-wishlist-modal').style.display = 'flex';
+        modal.style.display = 'flex';
     }
 
     function closeModal() {
         document.getElementById('big-wishlist-modal').style.display = 'none';
+        renderWishlist(); // 모달에서 변경 사항 반영
     }
 
-    // 코인 효율표 계산 및 렌더링
-    function calculateAndRenderEfficiency() {
-        const modalContentEl = document.getElementById('modal-efficiency-content');
-        modalContentEl.innerHTML = '';
-
-        if (typeof lootItems === 'undefined') {
-            modalContentEl.innerHTML = '<p style="text-align: center;">Error: Item data not loaded.</p>';
-            return;
-        }
-
-        // 1. 효율성 계산 (stack * price)
-        const efficiencyList = lootItems.map(item => {
-            // stack 필드가 없을 경우를 대비하여 기본값 1을 사용합니다.
-            const stack = item.stack || 1; 
-            const efficiency = item.price * stack;
-            return {
-                ...item,
-                efficiency: efficiency,
-                stack: stack 
-            };
-        });
-
-        // 2. 효율성 순으로 정렬 (내림차순)
-        efficiencyList.sort((a, b) => b.efficiency - a.efficiency);
+    // 모달 내부에서 아이템 선택/해제 시 모달 업데이트
+    function renderModalWishlist() {
+        openModal(); 
+    }
+    
+    // COIN EFFICIENCY CHART MODAL
+    function openEfficiencyModal() {
+        const modal = document.getElementById('efficiency-modal');
+        const modalContent = document.getElementById('modal-efficiency-content');
         
-        // 3. 모달에 렌더링
-        efficiencyList.forEach((item, index) => {
-            const div = document.createElement('div');
-            const tierClass = item.tier ? item.tier : '';
-            const safeName = item.name.replace(/[\\/:*?"<>|]/g, ''); // 이미지 파일명 생성
+        const efficiencyItems = lootItems
+            .filter(item => item.stack > 1) 
+            .map(item => ({
+                ...item,
+                efficiency: item.price * item.stack 
+            }))
+            .sort((a, b) => b.efficiency - a.efficiency);
 
-            div.className = `efficiency-item-card ${tierClass}`;
-            
-            div.innerHTML = `
-                <div class="efficiency-rank">${index + 1}</div>
-                <img src="${IMAGE_FOLDER}/${safeName}.webp" class="efficiency-icon" onerror="this.src='https://via.placeholder.com/40';">
-                <div class="efficiency-info">
-                    <div class="efficiency-name">${item.kr_name || item.name}</div>
-                    <div class="efficiency-value">${item.efficiency.toLocaleString()} Coin</div>
-                    <div class="efficiency-detail">Stack: ${item.stack.toLocaleString()} x Price: ${item.price.toLocaleString()}</div>
+        modalContent.innerHTML = efficiencyItems.map((item, index) => {
+            const safeName = item.name.replace(/[\\/:*?"<>|]/g, '');
+            return `
+                <div class="efficiency-item-card ${item.tier}">
+                    <div class="efficiency-rank">${index + 1}</div>
+                    <img src="${IMAGE_FOLDER}/${safeName}.webp" alt="${item.kr_name}" class="efficiency-icon" onerror="this.src='https://via.placeholder.com/40';">
+                    <div class="efficiency-info">
+                        <div class="efficiency-name">${item.kr_name} (${item.tier})</div>
+                        <div class="efficiency-value">${item.efficiency.toLocaleString()} Coin</div>
+                        <div class="efficiency-detail">${item.price.toLocaleString()} Coin × Stack ${item.stack}</div>
+                    </div>
                 </div>
             `;
-            modalContentEl.appendChild(div);
-        });
+        }).join('');
+
+        modal.style.display = 'flex';
     }
 
-    // 효율표 모달 열기
-    function openEfficiencyModal() {
-        calculateAndRenderEfficiency();
-        document.getElementById('efficiency-modal').style.display = 'flex';
-    }
-
-    // 효율표 모달 닫기
     function closeEfficiencyModal() {
         document.getElementById('efficiency-modal').style.display = 'none';
     }
 
+    // ----------------------------------------------------
+    // 💡 NEW CRAFTING STATION MODAL (아이콘 제거 반영)
+    // ----------------------------------------------------
+    
+    function openMaterialsModal() {
+        const modal = document.getElementById('materials-modal');
+        renderMaterialsModalContent();
+        modal.style.display = 'flex';
+    }
+
+    function closeMaterialsModal() {
+        document.getElementById('materials-modal').style.display = 'none';
+    }
+
+    function renderMaterialsModalContent() {
+        const modalContent = document.getElementById('modal-materials-content');
+        
+        modalContent.innerHTML = UPGRADE_MATERIALS.map(station => {
+            const levelsHtml = station.levels.map(level => {
+                
+                const materialsHtml = level.materials.map(mat => {
+                    // 아이콘(<img> 태그)을 제거하고 텍스트만 렌더링하도록 수정 (이전 요청 반영)
+                    return `
+                        <div class="material-item">
+                            ${mat.kr_name} × ${mat.count}
+                        </div>
+                    `;
+                }).join('');
+
+                return `
+                    <div class="level-section">
+                        <div class="level-header">LEVEL ${level.level}</div>
+                        <div class="level-materials">${materialsHtml}</div>
+                        ${level.unlocks ? `<div class="level-unlocks">주요 해금: ${level.unlocks}</div>` : ''}
+                    </div>
+                `;
+            }).join('');
+
+            return `
+                <div class="station-card">
+                    <div class="station-header">${station.name} (${station.en_name})</div>
+                    <div class="station-role">${station.role}</div>
+                    ${levelsHtml}
+                </div>
+            `;
+        }).join('');
+    }
+    
+    // ----------------------------------------------------
+    // Initialization
+    // ----------------------------------------------------
+
+    function init() {
+        loadSelectedItems();
+        setupFilters();
+        renderGrid();
+        renderWishlist();
+        updateTotalValue();
+    }
+
+    // 이벤트 리스너 설정
     document.addEventListener('DOMContentLoaded', () => {
-        const modal = document.getElementById('big-wishlist-modal');
-        if (modal) {
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) {
+        
+        init();
+
+        searchInput.addEventListener('input', renderGrid);
+        window.addEventListener('scroll', handleScroll);
+        
+        // 모달 닫기 리스너 (오버레이 클릭 시)
+        const bigWishlistModal = document.getElementById('big-wishlist-modal');
+        if (bigWishlistModal) {
+            bigWishlistModal.addEventListener('click', (e) => {
+                if (e.target === bigWishlistModal) {
                     closeModal();
                 }
             });
         }
         
-        // 효율표 모달 닫기 리스너 추가
         const efficiencyModal = document.getElementById('efficiency-modal');
         if (efficiencyModal) {
             efficiencyModal.addEventListener('click', (e) => {
@@ -1279,7 +1571,15 @@
             });
         }
         
-        init();
+        // 💡 NEW MODAL: 제작 스테이션 모달 닫기 리스너
+        const materialsModal = document.getElementById('materials-modal');
+        if (materialsModal) {
+            materialsModal.addEventListener('click', (e) => {
+                if (e.target === materialsModal) {
+                    closeMaterialsModal();
+                }
+            });
+        }
     });
 
 </script>
@@ -1304,9 +1604,23 @@
             <span id="modal-efficiency-info">Stack × Price = Efficiency</span>
         </div>
         <div id="modal-efficiency-content" class="modal-efficiency-grid">
-            <div style="text-align:center; padding: 20px; font-size: 1.1rem; color: #8c8c8c;">아이템 데이터를 불러오는 중...</div>
+            <div style="text-align:center; padding: 20px;">Loading efficiency data...</div>
         </div>
     </div>
 </div>
+
+<div id="materials-modal" class="modal-overlay">
+    <div class="modal-content">
+        <span class="modal-close" onclick="closeMaterialsModal()">&times;</span>
+        <div class="modal-header">
+            <div class="modal-header-title">CRAFTING STATION UPGRADES</div>
+            <span id="modal-materials-info">재료 아이콘이 보이지 않는 경우, 파일 이름을 확인해주세요.</span>
+        </div>
+        <div id="modal-materials-content">
+            <div style="text-align:center; padding: 20px;">Loading crafting station data...</div>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
